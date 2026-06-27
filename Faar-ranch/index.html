@@ -1,0 +1,1442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>ForEver After All Ranch — the ranch, in your pocket</title>
+<meta name="theme-color" content="#7A5341" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="FAAR Ranch" />
+<link rel="apple-touch-icon" href="icon-180.png" />
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22ForEver%20After%20All%20Ranch%22%2C%20%22short_name%22%3A%20%22FAAR%20Ranch%22%2C%20%22start_url%22%3A%20%22./%22%2C%20%22scope%22%3A%20%22./%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%23EADFCE%22%2C%20%22theme_color%22%3A%20%22%237A5341%22%2C%20%22orientation%22%3A%20%22portrait%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22icon-192.png%22%2C%20%22sizes%22%3A%20%22192x192%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22any%22%7D%2C%20%7B%22src%22%3A%20%22icon-512.png%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22any%22%7D%2C%20%7B%22src%22%3A%20%22icon-512.png%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22maskable%22%7D%5D%7D" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EADFCE; --surface:#FBF6EE; --surface-2:#F3E9DA;
+    --ink:#2E2620; --muted:#8A7869; --line:#E2D4C0;
+    --pine:#7A5341; --pine-deep:#5E3F30; --bark:#3A2A20;
+    --leather:#B07A70; --leather-deep:#90584F;
+    --brass:#C7A267; --brass-lt:#E2C892;
+    --rose-soft:#F2DAD3;
+    --good:#5E8A5A; --warn:#B07A2A; --bad:#A8492F;
+    --shadow:0 1px 2px rgba(46,38,32,.06), 0 8px 24px rgba(46,38,32,.09);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:Inter,system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(120% 90% at 50% -10%, #f6e7df 0%, var(--bg) 55%) fixed,
+      repeating-linear-gradient(90deg, rgba(120,84,64,.035) 0 2px, transparent 2px 46px) fixed;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+  }
+  .display{font-family:"Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.01em}
+  button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  img{max-width:100%;display:block}
+  input,textarea{font-family:inherit;font-size:16px}
+  :focus-visible{outline:2.5px solid var(--brass);outline-offset:2px;border-radius:6px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ---- phone shell ---- */
+  .shell{
+    max-width:448px;margin:0 auto;min-height:100dvh;
+    background:var(--surface);
+    box-shadow:0 0 0 1px var(--line), 0 30px 80px rgba(30,25,18,.18);
+    position:relative;overflow:hidden;display:flex;flex-direction:column;
+  }
+  @media(min-width:480px){ .shell{margin:24px auto;min-height:calc(100dvh - 48px);border-radius:28px} }
+
+  /* ---- top bar ---- */
+  .topbar{
+    background:var(--bark);color:#EDE6D6;padding:14px 18px;
+    display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30;
+    border-bottom:1px solid rgba(182,138,62,.35);
+  }
+  .brand{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+  .brand .mark{
+    width:30px;height:30px;border-radius:8px;flex:none;
+    background:linear-gradient(160deg,var(--brass-lt),var(--brass));
+    display:grid;place-items:center;color:var(--bark);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.5), 0 1px 3px rgba(0,0,0,.3);
+  }
+  .brand b{font-family:"Bricolage Grotesque";font-weight:700;font-size:16px;letter-spacing:.01em;line-height:1}
+  .brand small{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-lt);margin-top:2px}
+  .topbar .spacer{flex:1}
+  .status-pill{
+    display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+    padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.12);white-space:nowrap;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:#7e8c80}
+  .dot.on{background:#7BD389;box-shadow:0 0 0 3px rgba(123,211,137,.25);animation:pulse 2s infinite}
+  @keyframes pulse{50%{box-shadow:0 0 0 6px rgba(123,211,137,0)}}
+  .ava{width:30px;height:30px;border-radius:9px;object-fit:cover;border:1.5px solid var(--brass);background:var(--pine)}
+  .icon-btn{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#EDE6D6;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);position:relative;flex:none}
+  .icon-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+  .nbadge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 3px;border-radius:9px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid var(--bark)}
+
+  /* ---- scroll body ---- */
+  .body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .view{padding:18px 16px 8px;animation:rise .35s ease}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--leather);font-weight:600;margin:0 0 4px}
+  h1.title{font-family:"Bricolage Grotesque";font-weight:700;font-size:25px;margin:0 0 2px;letter-spacing:-.02em}
+  .sub{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .section-label{display:flex;align-items:center;gap:10px;margin:22px 2px 12px}
+  .section-label h2{font-family:"Bricolage Grotesque";font-weight:600;font-size:15px;margin:0}
+  .section-label .ln{flex:1;height:1px;background:var(--line)}
+
+  /* ---- nameplate (signature motif) ---- */
+  .plate{
+    --pl:#C9A75A;
+    display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:9px;
+    background:linear-gradient(170deg,#d8bd7e,#b78f43 60%,#a07b35);
+    color:#2a2113;box-shadow:inset 0 1px 1px rgba(255,255,255,.55), inset 0 -2px 4px rgba(80,55,10,.35), var(--shadow);
+    border:1px solid #8a6c2e;position:relative;
+  }
+  .plate::before{content:"";position:absolute;left:6px;top:6px;width:5px;height:5px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,#fff7df,#7a5d22);box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+  .plate::after{content:"";position:absolute;right:6px;top:6px;width:5px;height:5px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,#fff7df,#7a5d22);box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+  .plate .pname{font-family:"Bricolage Grotesque";font-weight:700;font-size:15px;letter-spacing:.02em;line-height:1.1}
+  .plate .pmeta{font-size:11px;opacity:.8;line-height:1.1;margin-top:1px}
+  .plate .photo{width:38px;height:38px;border-radius:7px;object-fit:cover;border:1px solid #8a6c2e;flex:none;background:#2e2a22}
+
+  /* ---- buttons ---- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:12px 16px;border-radius:12px;font-weight:600;font-size:14px;
+    background:var(--pine);color:#F4EFE2;box-shadow:var(--shadow);transition:transform .08s, filter .15s;
+    width:100%;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.leather{background:var(--leather)}
+  .btn.ghost{background:transparent;color:var(--pine);border:1.5px solid var(--line);box-shadow:none}
+  .btn.brass{background:linear-gradient(160deg,var(--brass-lt),var(--brass));color:#2a2113}
+  .btn.sm{padding:8px 12px;font-size:13px;width:auto}
+  .btn.danger{background:var(--bad)}
+  .btn[disabled]{opacity:.5;pointer-events:none}
+
+  /* ---- check-in ---- */
+  .checkin-card{padding:18px;text-align:center;margin-bottom:8px;background:linear-gradient(165deg,#efe4cd,#e6d9bc)}
+  .big-toggle{
+    width:92px;height:92px;border-radius:50%;margin:4px auto 8px;display:grid;place-items:center;
+    background:radial-gradient(circle at 50% 32%, #d35346, #b23529);color:#fff;
+    border:2px solid #9c2f25;box-shadow:0 0 0 6px rgba(178,53,41,.13), var(--shadow);transition:.25s;
+  }
+  .big-toggle .ic{font-size:24px;line-height:1}
+  .big-toggle .lbl{font-size:10px;font-weight:700;letter-spacing:.05em;margin-top:3px}
+  .big-toggle.on{
+    background:radial-gradient(circle at 50% 35%,#946a53,var(--pine));color:#f6ece6;border:2px solid var(--brass);
+    box-shadow:0 0 0 6px rgba(51,80,63,.12), var(--shadow);
+  }
+  .board{display:flex;flex-direction:column;gap:9px}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:18px;border:1px dashed var(--line);border-radius:12px;background:var(--surface-2)}
+
+  /* ---- feed ---- */
+  .post{padding:13px 14px;margin-bottom:10px}
+  .post .head{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .post .head img{width:32px;height:32px;border-radius:9px;object-fit:cover;background:var(--pine)}
+  .post .who{font-weight:600;font-size:13.5px}
+  .post .when{font-size:11px;color:var(--muted)}
+  .post .txt{font-size:14px;color:#352f27}
+  .post .tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--leather);background:#f2e6df;padding:2px 7px;border-radius:6px;margin-left:auto}
+  .post .acts{display:flex;gap:16px;margin-top:9px;font-size:12px;color:var(--muted);font-weight:600}
+  .post .acts button{display:flex;align-items:center;gap:5px;color:var(--muted)}
+  .post .acts button.liked{color:var(--leather)}
+  .composer{display:flex;gap:8px;align-items:flex-end;margin-bottom:14px}
+  .composer textarea{flex:1;border:1px solid var(--line);border-radius:12px;padding:10px 12px;resize:none;
+    background:var(--surface);min-height:44px;max-height:120px;font-size:14px;color:var(--ink)}
+
+  /* ---- hire ---- */
+  .pro{display:flex;gap:12px;padding:13px;margin-bottom:10px;align-items:center}
+  .pro .av{width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;font-size:22px;
+    background:var(--surface-2);border:1px solid var(--line)}
+  .pro .nm{font-weight:600;font-size:14px}
+  .pro .role{font-size:11.5px;color:var(--leather);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .pro .meta{font-size:12px;color:var(--muted);margin-top:2px}
+  .stars{color:var(--brass);font-size:12px;letter-spacing:1px}
+
+  /* ---- shop ---- */
+  .shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .prod{padding:0;overflow:hidden;display:flex;flex-direction:column}
+  .prod .pic{aspect-ratio:1;background:var(--surface-2);display:grid;place-items:center;border-bottom:1px solid var(--line)}
+  .prod .pic svg{width:74%;height:74%}
+  .prod .info{padding:9px 10px 11px}
+  .prod .pn{font-weight:600;font-size:13px;line-height:1.25}
+  .prod .pp{font-family:"Bricolage Grotesque";font-weight:700;font-size:15px;margin-top:2px}
+  .prod .add{margin-top:8px;width:100%;padding:7px;font-size:12.5px}
+  .brandtag{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);font-weight:600}
+
+  /* ---- rides ---- */
+  .ride{padding:14px;margin-bottom:11px;position:relative;overflow:hidden}
+  .ride .date{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .ride .cal{width:46px;height:50px;border-radius:10px;background:var(--pine);color:#fff;display:grid;
+    place-items:center;text-align:center;flex:none;line-height:1}
+  .ride .cal .m{font-size:9px;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+  .ride .cal .d{font-family:"Bricolage Grotesque";font-weight:700;font-size:20px}
+  .ride .rn{font-family:"Bricolage Grotesque";font-weight:600;font-size:15px}
+  .ride .rmeta{font-size:12px;color:var(--muted);margin-top:1px}
+  .chip{display:inline-block;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;
+    background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+  .chip.easy{color:#2f6b43;background:#e6f0e6;border-color:#cadfca}
+  .chip.mod{color:#9a6b1f;background:#f4ecd9;border-color:#e6d6ad}
+  .chip.adv{color:#9a3a26;background:#f4e0da;border-color:#e6c4ba}
+  .spots{font-size:12px;font-weight:600;margin:9px 0 10px}
+  .spots b{color:var(--leather)}
+
+  /* ---- bottom nav ---- */
+  .tabs{
+    flex:none;width:100%;
+    background:rgba(251,248,241,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+    display:flex;z-index:40;padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;color:var(--muted);font-size:9.5px;font-weight:600;letter-spacing:.02em}
+  .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+  .tab.active{color:var(--pine)}
+  .tab.active .ix{background:rgba(122,83,65,.12)}
+  .tab .ix{padding:4px 12px;border-radius:999px;transition:.2s}
+
+  /* ---- onboarding ---- */
+  .onboard{padding:0;min-height:100dvh;display:flex;flex-direction:column}
+  .hero{
+    background:linear-gradient(180deg,var(--bark),var(--pine-deep));color:#EDE6D6;
+    padding:46px 26px 30px;position:relative;overflow:hidden;
+  }
+  .hero::after{content:"";position:absolute;inset:0;opacity:.12;
+    background:repeating-linear-gradient(115deg,#fff 0 1px,transparent 1px 9px)}
+  .hero .mk{width:54px;height:54px;border-radius:15px;background:linear-gradient(160deg,var(--brass-lt),var(--brass));
+    display:grid;place-items:center;color:var(--bark);margin-bottom:18px;box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+  .hero h1{font-family:"Bricolage Grotesque";font-weight:700;font-size:33px;line-height:1.04;margin:0 0 8px;letter-spacing:-.02em;position:relative}
+  .hero p{font-size:14.5px;color:#cfc6b2;margin:0;max-width:30ch;position:relative}
+  .ob-body{padding:24px 22px 30px;flex:1}
+  .photo-drop{
+    aspect-ratio:1;border-radius:20px;border:2px dashed var(--line);background:var(--surface-2);
+    display:grid;place-items:center;text-align:center;color:var(--muted);overflow:hidden;position:relative;margin-bottom:18px;
+  }
+  .photo-drop img{width:100%;height:100%;object-fit:cover}
+  .photo-drop .ph{display:flex;flex-direction:column;align-items:center;gap:7px;padding:20px}
+  .photo-drop .ph .ic{font-size:34px}
+  .photo-drop .frame{position:absolute;inset:10px;border:2px solid rgba(182,138,62,.55);border-radius:14px;pointer-events:none}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .field input{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+
+  /* ---- modal / toast ---- */
+  .scrim{position:fixed;inset:0;background:rgba(30,25,18,.5);z-index:60;display:grid;place-items:center;padding:24px;animation:fade .2s}
+  @keyframes fade{from{opacity:0}}
+  .modal{background:var(--surface);border-radius:20px;padding:22px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:rise .25s}
+  .modal h3{font-family:"Bricolage Grotesque";font-weight:700;font-size:19px;margin:0 0 4px}
+  .modal p{font-size:13px;color:var(--muted);margin:0 0 16px}
+  .modal input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:var(--surface-2)}
+  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);z-index:80;
+    background:var(--bark);color:#EDE6D6;padding:11px 18px;border-radius:999px;font-size:13px;font-weight:500;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);border:1px solid rgba(182,138,62,.4);animation:toastin .3s;max-width:90%}
+  @keyframes toastin{from{opacity:0;transform:translate(-50%,12px)}}
+
+  /* ---- owner mode ---- */
+  .owner-banner{background:linear-gradient(120deg,var(--leather),var(--leather-deep));color:#fbeee7;
+    padding:11px 16px;display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:600}
+  .owner-banner .x{margin-left:auto}
+  .stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px}
+  .stat{padding:12px 10px;text-align:center}
+  .stat .n{font-family:"Bricolage Grotesque";font-weight:700;font-size:22px;color:var(--pine)}
+  .stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+  .horse-card{padding:13px;margin-bottom:12px}
+  .horse-card .top{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+  .horse-card .stall{font-size:11px;color:var(--muted)}
+  .horse-card .bal{margin-left:auto;text-align:right}
+  .horse-card .bal .amt{font-family:"Bricolage Grotesque";font-weight:700;font-size:15px}
+  .horse-card .bal.due .amt{color:var(--bad)}
+  .horse-card .bal.paid .amt{color:var(--good)}
+  .med{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;background:var(--surface-2);margin-bottom:7px;border:1px solid var(--line)}
+  .med .mn{font-weight:600;font-size:13px}
+  .med .md{font-size:11.5px;color:var(--muted)}
+  .med .toggle{margin-left:auto;flex:none}
+  .switch{width:46px;height:27px;border-radius:999px;background:#cfc6b2;position:relative;transition:.2s;flex:none}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+  .switch.on{background:var(--good)}
+  .switch.on::after{left:22px}
+  .note{font-size:12px;color:#4a443a;background:#f6f0e2;border-left:3px solid var(--brass);padding:7px 10px;border-radius:0 8px 8px 0;margin-top:8px}
+  .mini-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:10px 0 5px}
+
+  .foot{padding:20px 16px 30px;text-align:center;color:var(--muted);font-size:11px}
+  .foot b{cursor:default;color:var(--muted)}
+  .cart-fab{position:absolute;right:16px;bottom:84px;z-index:45;width:50px;height:50px;border-radius:16px;
+    background:var(--leather);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow)}
+  .cart-fab .badge{position:absolute;top:-5px;right:-5px;background:var(--brass);color:#2a2113;font-size:11px;font-weight:700;
+    width:21px;height:21px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--surface)}
+  /* leopard / operator backdrop */
+  .leopard{position:relative;background-color:#d6a85c;background-image:
+    radial-gradient(circle at 12% 18%, #7a4f24 0 5px, #34210f 5px 8px, transparent 9px),
+    radial-gradient(circle at 38% 30%, #7a4f24 0 6px, #34210f 6px 10px, transparent 11px),
+    radial-gradient(circle at 70% 15%, #7a4f24 0 5px, #34210f 5px 8px, transparent 9px),
+    radial-gradient(circle at 88% 42%, #7a4f24 0 6px, #34210f 6px 9px, transparent 10px),
+    radial-gradient(circle at 22% 62%, #7a4f24 0 6px, #34210f 6px 10px, transparent 11px),
+    radial-gradient(circle at 55% 70%, #7a4f24 0 5px, #34210f 5px 8px, transparent 9px),
+    radial-gradient(circle at 82% 80%, #7a4f24 0 6px, #34210f 6px 9px, transparent 10px),
+    radial-gradient(circle at 45% 92%, #7a4f24 0 5px, #34210f 5px 8px, transparent 9px),
+    radial-gradient(circle at 8% 88%, #34210f 0 3px, transparent 4px),
+    radial-gradient(circle at 64% 46%, #34210f 0 3px, transparent 4px),
+    radial-gradient(circle at 30% 6%, #34210f 0 3px, transparent 4px);
+    background-size:150px 130px;}
+  .leopard::before{content:"";position:absolute;inset:0;background:url("cheetah.png") center/cover;pointer-events:none;z-index:0}
+  .op-sheet{position:relative;z-index:1;background:rgba(251,246,238,.94);margin:13px;border-radius:18px;border:1px solid #c79a52;box-shadow:0 10px 30px rgba(40,24,10,.35)}
+  .op-sheet .view{animation:none}
+  .optabs{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:13px;padding:4px;margin-bottom:16px;position:sticky;top:8px;z-index:5}
+  .optab{flex:1;padding:9px 4px;border-radius:10px;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+  .optab.on{background:var(--pine);color:#F4EFE2;box-shadow:var(--shadow)}
+  .rsort{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:3px;margin-bottom:12px}
+  .rsort button{flex:1;padding:7px 4px;border-radius:8px;font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+  .rsort button.on{background:var(--leather);color:#fff}
+  .seg{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:3px;margin-bottom:10px}
+  .segbtn{flex:1;padding:9px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted)}
+  .segbtn.on{background:var(--pine);color:#F4EFE2}
+  .stallgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:4px}
+  .stallcell{border:1px solid var(--line);border-radius:10px;padding:9px 4px;text-align:center;background:var(--surface)}
+  .stallcell .sn{font-family:'Bricolage Grotesque';font-weight:700;font-size:15px}
+  .stallcell .so{font-size:9.5px;color:var(--muted);margin-top:1px;line-height:1.15}
+  .stallcell.mine{background:var(--pine);color:#F4EFE2;border-color:var(--pine)}
+  .stallcell.mine .so{color:#e7dcc7}
+  .stallcell.taken{opacity:.45}
+  .stallcell[disabled]{pointer-events:none}
+  .pastrow{display:flex;align-items:center;justify-content:space-between;width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-top:7px;background:var(--surface);font-size:13.5px;font-weight:600;text-align:left}
+  .pastrow .cnt{font-size:12px;color:var(--muted);font-weight:600}
+  .pastrow.mine{background:var(--pine);color:#F4EFE2;border-color:var(--pine)}
+  .pastrow.mine .cnt{color:#e7dcc7}
+  .pastrow[disabled]{opacity:.5;pointer-events:none}
+  .todTime{width:96px;border:1px solid var(--line);border-radius:8px;padding:6px 7px;background:var(--surface-2);font-size:12px;color:var(--ink);font-family:inherit;flex:none}
+  .todCheck{width:32px;height:32px;border-radius:9px;border:2px solid var(--line);background:var(--surface);color:#fff;font-weight:800;font-size:15px;flex:none;display:grid;place-items:center}
+  .todCheck.on{background:var(--good);border-color:var(--good)}
+  .medrow.done{opacity:.6}
+  .medrow.done .mn2{text-decoration:line-through}
+  .medfield{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);margin-bottom:8px;font-size:16px}
+  /* colored horse badge */
+  .hbox{display:inline-grid;place-items:center;border-radius:6px;flex:none;color:#fff;vertical-align:middle;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  /* profile editor */
+  .back-btn{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--pine);margin-bottom:10px}
+  .hcard{display:flex;flex-direction:column;gap:9px;padding:12px;margin-bottom:11px}
+  .hrow{display:flex;align-items:center;gap:9px}
+  .hrow input{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--surface);color:var(--ink)}
+  .xbtn{width:30px;height:30px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line);color:var(--bad);font-weight:700;flex:none}
+  .swatches{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px}
+  .swatch{width:26px;height:26px;border-radius:8px;border:2px solid transparent}
+  .swatch.sel{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)}
+  /* replies */
+  .reply-list{margin-top:9px;padding-left:11px;border-left:2px solid var(--line);display:flex;flex-direction:column;gap:9px}
+  .reply{display:flex;gap:8px;align-items:flex-start}
+  .reply .rtxt{font-size:13px;color:#352f27;margin-top:1px}
+  .reply .rwho{font-weight:600;font-size:12.5px}
+  .reply .rwhen{font-size:10.5px;color:var(--muted)}
+  .reply-box{display:flex;gap:7px;align-items:center;margin-top:10px}
+  .reply-box input{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--surface-2);font-size:16px;color:var(--ink)}
+  #boardTrigger{touch-action:none;-webkit-touch-callout:none}
+  .logo{background:#FBF6EE!important;overflow:hidden}
+  .logo img{width:100%;height:100%;object-fit:contain;display:block}
+  .logo .fallback{width:100%;height:100%;place-items:center;color:var(--pine)}
+  .mk.logo{padding:4px}
+  .mark.logo{padding:2px}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="shell" id="shell"></div>
+
+<script>
+/* =========================================================================
+   ForEver After All Ranch — horse boarding community app (prototype, single file)
+   In-memory state with localStorage persistence (graceful fallback).
+   ========================================================================= */
+
+const store = {
+  get(k,f){ try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f} },
+  set(k,v){ try{localStorage.setItem(k,JSON.stringify(v))}catch(e){} }
+};
+
+const LOGO = "https://static.wixstatic.com/media/699fe3_26ea3fc91eee4e41ba72c107dabc8d00~mv2.png/v1/fill/w_85,h_89,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/699fe3_26ea3fc91eee4e41ba72c107dabc8d00~mv2.png";
+const PIN_DEFAULT = "0000";
+const HCOLORS = ["#7A5341","#9A5A48","#3A2A20","#B8AFA3","#C7A267","#E7D8C3","#A6764E","#5E3F30","#B07A70","tortilla","paint","appaloosa"];
+
+/* ---------- seed data ---------- */
+const SEED_BOARD = [
+  {name:"Marcy R.", full:"Marcy Rivera", first:"Marcy", contact:"(520) 555-0182", horse:"Biscuit", since:18, photo:null, color:"#9A5A48", showHorse:false},
+  {name:"Theo P.",  full:"Theo Park",   first:"Theo",  contact:"(520) 555-0147", horse:"Dakota",  since:52, photo:null, color:"#B07A70", showHorse:true},
+];
+const SEED_FEED = [
+  {id:1, who:"Lena W.", horse:"Willow", tag:"property", txt:"Gate by the north pasture was left open this morning — latched it back up. Just a heads up 🐴", when:"32m", color:"#A6764E", likes:6, liked:false, replies:[{who:"Coach Dre",color:"#7A5341",txt:"Thanks for catching that 🙏",when:"28m"}]},
+  {id:2, who:"Coach Dre", horse:"Maverick", tag:"horses", txt:"Anyone else's horse going crazy for the new alfalfa cubes? Maverick won't leave me alone lol", when:"1h", color:"#7A5341", likes:11, liked:false, replies:[{who:"Marcy R.",color:"#9A5A48",txt:"Biscuit too! Obsessed.",when:"50m"}]},
+  {id:3, who:"Sam K.", horse:"Pepper", tag:"found", txt:"Found a navy lead rope by the wash rack. It's hanging on the tack room hook if it's yours.", when:"3h", color:"#C7A267", likes:4, liked:false, replies:[]},
+  {id:4, who:"Marcy R.", horse:"Biscuit", tag:"horses", txt:"Trail by the creek is in beautiful shape after the rain. Footing's perfect, go ride!", when:"5h", color:"#9A5A48", likes:9, liked:false, replies:[]},
+];
+const SEED_ANN = [
+  {id:1, txt:"Welcome to the ForEver After All Ranch app! Check in when you arrive so I know who's on the property. So glad to have you part of our ranch family. 🐴", when:"Today", by:"Bryanna"},
+  {id:2, txt:"Fly season is here — please keep fly masks on during turnout. Fresh fly spray is stocked in the tack room.", when:"Yesterday", by:"Bryanna"},
+];
+const SEED_NOTIFS = [
+  {id:1, type:"like",        who:"Marcy R.",  color:"#9A5A48", text:"liked your post", when:"5m",  read:false},
+  {id:2, type:"reply",       who:"Coach Dre", color:"#7A5341", text:"replied to your post", when:"22m", read:false},
+  {id:3, type:"commentlike", who:"Sam K.",    color:"#C7A267", text:"liked your comment", when:"1h", read:false},
+];
+const SIMPLE_PEOPLE = [
+  {who:"Marcy R.",color:"#9A5A48"},{who:"Coach Dre",color:"#7A5341"},
+  {who:"Sam K.",color:"#C7A267"},{who:"Lena W.",color:"#A6764E"},{who:"Priya",color:"#B07A70"}
+];
+const SEED_RIDECHATS = {
+  1:[{who:"Priya",color:"#B07A70",txt:"We'll meet at the arena gate at 7:50 — bring water! 💧",when:"2h"},
+     {who:"Marcy R.",color:"#9A5A48",txt:"Is this okay for a greener horse?",when:"1h"},
+     {who:"Priya",color:"#B07A70",txt:"Totally — we keep it to a walk/trot the whole loop. 🐴",when:"58m"}],
+  2:[{who:"Coach Dre",color:"#7A5341",txt:"Heads up, this one's a real climb — fit horses only.",when:"3h"}],
+};
+const PROS = [
+  {ic:"🩺", nm:"Dr. Ellen Voss", role:"Equine Vet", meta:"Mobile · Wellness, lameness, dental", rate:"$95 call-out", stars:5},
+  {ic:"🧲", nm:"Hank Delgado", role:"Farrier", meta:"Trims & shoeing · 12 yrs", rate:"from $65", stars:5},
+  {ic:"🤠", nm:"Priya Anand", role:"Trainer", meta:"Groundwork, dressage, confidence", rate:"$70/hr", stars:4},
+  {ic:"🦷", nm:"Marcus Lee", role:"Equine Dentist", meta:"Floating, exams · by appt", rate:"$140 visit", stars:5},
+  {ic:"💆", nm:"Rae Coleman", role:"Bodywork & Massage", meta:"Recovery & mobility", rate:"$85/session", stars:4},
+];
+const PRODUCTS = [
+  {id:"loghat",  nm:"FAAR Logo Hat", price:28, svg:"cap"},
+  {id:"trucker", nm:"FAAR Trucker Cap", price:26, svg:"trucker"},
+  {id:"logtee",  nm:"FAAR Logo Tee", price:30, svg:"tee"},
+  {id:"hoodie",  nm:"FAAR Hoodie", price:52, svg:"hoodie"},
+  {id:"tote",    nm:"FAAR Tote Bag", price:18, svg:"tote"},
+  {id:"flymask", nm:"FAAR Fly Mask", price:24, svg:"flymask"},
+  {id:"lead",    nm:"Braided Lead Rope", price:18, svg:"lead"},
+  {id:"pick",    nm:"Brass Hoof Pick", price:12, svg:"pick"},
+  {id:"brush",   nm:"Dandy Brush", price:15, svg:"brush"},
+  {id:"treats",  nm:"Apple-Oat Treats", price:9,  svg:"treats"},
+  {id:"spray",   nm:"FAAR Fly Spray", price:21, svg:"spray"},
+];
+const RIDES = [
+  {id:1, m:"Jun", d:28, nm:"Creek Loop Trail Ride", time:"Sat · 8:00 AM", guide:"led by Priya", diff:"easy", cap:10, taken:6},
+  {id:2, m:"Jul", d:5,  nm:"Sunrise Ridge Climb", time:"Sat · 6:30 AM", guide:"led by Coach Dre", diff:"adv", cap:8, taken:7},
+  {id:3, m:"Jul", d:12, nm:"Family Pasture Amble", time:"Sat · 10:00 AM", guide:"led by Marcy", diff:"easy", cap:12, taken:4},
+  {id:4, m:"Jul", d:19, nm:"Moonlight Group Ride", time:"Fri · 7:45 PM", guide:"led by Priya", diff:"mod", cap:10, taken:9},
+];
+const STALLS = ["Stall 1","Stall 2","Stall 3","Stall 4","Stall 5","Stall 6","Stall 7","Stall 8","Stall 9"];
+const PASTURES = ["Pasture 1","Pasture 2","Pasture 3","Pasture 4"];
+const PASTURE_CAP = 10;
+const HORSES = [
+  {name:"Biscuit", owner:"Marcy Rivera", contact:"(520) 555-0182", stall:"Stall 1", pasture:"Pasture 1", plan:"Full-Care Stall", balance:0, location:"stall",
+   meds:[{n:"Previcox",dose:"1 tab",time:"07:00",given:true},{n:"Joint supplement",dose:"2 scoops",time:"17:00",given:false}],
+   feed:"Soaked alfalfa cubes — no dry hay (dental).", color:"#9A5A48"},
+  {name:"Dakota", owner:"Theo Park", contact:"(520) 555-0147", stall:"Stall 4", pasture:"Pasture 1", plan:"Pasture Board", balance:240, location:"pasture",
+   meds:[{n:"Bute (as needed)",dose:"½ tab if stiff",time:"08:00",given:false}],
+   feed:"Standard grass hay, 2 flakes AM/PM.", color:"#7A5341"},
+  {name:"Willow", owner:"Lena Wong", contact:"(520) 555-0199", stall:"Stall 2", pasture:"Pasture 1", plan:"Full-Care Stall", balance:0, location:"stall",
+   meds:[{n:"Thyro-L",dose:"1 scoop",time:"07:00",given:true},{n:"Ulcer paste",dose:"1 dose",time:"07:00",given:true}],
+   feed:"Low-sugar pellets, soaked. Muzzle on turnout.", color:"#B07A70"},
+  {name:"Maverick", owner:"Andre Coleman", contact:"(520) 555-0163", stall:"Stall 3", pasture:"Pasture 2", plan:"Training Board", balance:520, location:"stall",
+   meds:[],
+   feed:"High-cal performance feed, 3x daily.", color:"#8A6552"},
+  {name:"Pepper", owner:"Sam Klein", contact:"(520) 555-0175", stall:"Stall 5", pasture:"Pasture 2", plan:"Pasture Board", balance:0, location:"pasture",
+   meds:[{n:"Antibiotic (SMZ)",dose:"6 tabs · 4 days left",time:"07:00",given:false},{n:"Antibiotic (SMZ)",dose:"6 tabs · 4 days left",time:"19:00",given:false}],
+   feed:"Grass hay free-choice. Watch left hind wrap.", color:"#C7A267"},
+];
+
+/* ---------- app state ---------- */
+let S = {
+  user: store.get("ch_user", null),
+  view: "barn",
+  checkedIn: false,
+  board: store.get("ch_board", SEED_BOARD.slice()),
+  feed: store.get("ch_feed", SEED_FEED.slice()),
+  announcements: store.get("ch_ann", SEED_ANN.slice()),
+  notifs: store.get("ch_notifs", SEED_NOTIFS.slice()),
+  rideChats: store.get("ch_ridechats", JSON.parse(JSON.stringify(SEED_RIDECHATS))),
+  rideOpen:null,
+  cart: 0,
+  joined: {},
+  owner: false,
+  horses: store.get("ch_horses", HORSES.map(h=>({...h,meds:h.meds.map(m=>({...m}))}))),
+  replyOpen:null,
+  prof:null,
+  ownerHorse:null,
+  editAnn:null,
+  pin: store.get("ch_pin", PIN_DEFAULT),
+  opTab:"today",
+  rosterSort:null,
+  medEdit:null,
+};
+// migrate saved horses missing a location, and to the specific stall/pasture model
+if(Array.isArray(S.horses)){
+  const usedStalls=[];
+  S.horses.forEach(h=>{
+    if(!h.location) h.location = (h.plan&&/pasture/i.test(h.plan))?"pasture":"stall";
+    if(!h.pasture) h.pasture="Pasture 1";
+    if(!/^Stall \d+$/.test(h.stall||"")){
+      for(let i=1;i<=9;i++){ const s="Stall "+i; if(usedStalls.indexOf(s)<0){ h.stall=s; usedStalls.push(s); break; } }
+    } else usedStalls.push(h.stall);
+    if(Array.isArray(h.meds)) h.meds.forEach(m=>{ if(!m.time) m.time="07:00"; });
+  });
+}
+// migrate older saved profiles to the multi-horse model
+if(S.user && !S.user.horses){
+  S.user.horses=[{name:S.user.horse||"My horse", color:S.user.color||"#7A5341"}];
+  if(!S.user.nick) S.user.nick=S.user.name;
+}
+
+/* ---------- helpers ---------- */
+const $ = (s,r=document)=>r.querySelector(s);
+const shell = $("#shell");
+function save(){ store.set("ch_user",S.user); store.set("ch_board",S.board); store.set("ch_feed",S.feed); store.set("ch_ann",S.announcements); store.set("ch_notifs",S.notifs); store.set("ch_ridechats",S.rideChats); store.set("ch_horses",S.horses); }
+function initials(n){ return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(); }
+function avatar(photo,color,name,size=32){
+  const bg=(color&&color[0]==="#")?color:"#C8A06A";
+  if(photo) return `<img class="ava-img" src="${photo}" alt="" style="width:${size}px;height:${size}px;border-radius:9px;object-fit:cover;background:${bg}">`;
+  return `<div style="width:${size}px;height:${size}px;border-radius:9px;background:${bg};display:grid;place-items:center;color:#fff;font-weight:600;font-size:${size*0.38}px;flex:none">${initials(name)}</div>`;
+}
+function shade(hex,pct){
+  let c=(hex||"#7A5341").replace("#",""); if(c.length===3)c=c.split("").map(x=>x+x).join("");
+  let r=parseInt(c.slice(0,2),16),g=parseInt(c.slice(2,4),16),b=parseInt(c.slice(4,6),16);
+  const f=pct<0?0:255,p=Math.abs(pct);
+  r=Math.round((f-r)*p)+r; g=Math.round((f-g)*p)+g; b=Math.round((f-b)*p)+b;
+  return "#"+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,"0")).join("");
+}
+let _hg=0;
+function coatBase(c){ return c==="tortilla"?"#E7D3A6" : c==="paint"?"#6F4A37" : c==="appaloosa"?"#6E4B38" : c; }
+function horse3D(color,size=28){
+  const id="hg"+(_hg++), cid="hc"+(_hg++);
+  const pat = (color==="tortilla"||color==="paint"||color==="appaloosa") ? color : null;
+  const base=coatBase(color);
+  const lt=shade(base,.34), dk=shade(base,-.26), dk2=shade(base,-.44);
+  const clip = pat ? `<clipPath id="${cid}"><ellipse cx="33" cy="33" rx="18" ry="12"/><path d="M21 28 Q15 24 11 14 L18 11 Q24 22 27 31 Z"/><path d="M16 11 Q9 9 6 16 Q5 20 9 21 Q13 21 15 17 Q18 14 16 11 Z"/></clipPath>` : "";
+  const tortilla = `<g clip-path="url(#${cid})">
+      <ellipse cx="27" cy="31" rx="5.5" ry="4" fill="#b07d3c" opacity=".9"/><ellipse cx="41" cy="34" rx="6" ry="4.6" fill="#9a6630" opacity=".88"/>
+      <ellipse cx="34" cy="38" rx="4" ry="3" fill="#b07d3c" opacity=".85"/><ellipse cx="45" cy="29" rx="3.4" ry="2.6" fill="#8a5a2a" opacity=".85"/>
+      <ellipse cx="20" cy="25" rx="3.4" ry="2.8" fill="#9a6630" opacity=".85"/><ellipse cx="11" cy="16" rx="3" ry="2.4" fill="#b07d3c" opacity=".8"/>
+      <ellipse cx="31" cy="26" rx="2.6" ry="2" fill="#8a5a2a" opacity=".8"/></g>`;
+  const paint = `<g clip-path="url(#${cid})">
+      <path d="M30 26 Q45 24 46 38 Q40 46 30 44 Q23 36 30 26 Z" fill="#f6efe1"/>
+      <ellipse cx="20" cy="30" rx="5.4" ry="5" fill="#f6efe1"/><ellipse cx="10" cy="16" rx="3.6" ry="3" fill="#f6efe1"/></g>`;
+  const appaloosa = `<g clip-path="url(#${cid})">
+      <ellipse cx="42" cy="33" rx="12" ry="11" fill="#efe7d6"/>
+      <circle cx="40" cy="30" r="1.6" fill="#3a2a1f"/><circle cx="46" cy="34" r="1.8" fill="#3a2a1f"/><circle cx="44" cy="38" r="1.4" fill="#3a2a1f"/>
+      <circle cx="38" cy="36" r="1.5" fill="#3a2a1f"/><circle cx="48" cy="30" r="1.3" fill="#3a2a1f"/><circle cx="42" cy="33.5" r="1.4" fill="#3a2a1f"/></g>`;
+  const overlay = pat==="tortilla"?tortilla : pat==="paint"?paint : pat==="appaloosa"?appaloosa : "";
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" style="flex:none;vertical-align:middle;display:inline-block">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${lt}"/><stop offset=".55" stop-color="${base}"/><stop offset="1" stop-color="${dk}"/>
+    </linearGradient>${clip}</defs>
+    <ellipse cx="33" cy="57" rx="19" ry="3.4" fill="#000" opacity=".14"/>
+    <rect x="43" y="38" width="5.6" height="18" rx="2.7" fill="${dk}"/>
+    <rect x="22" y="39" width="5.6" height="17" rx="2.7" fill="${dk}"/>
+    <rect x="36" y="40" width="5.6" height="16" rx="2.7" fill="${dk2}"/>
+    <rect x="16" y="40" width="5.6" height="16" rx="2.7" fill="${dk2}"/>
+    <path d="M49 30 q12 1 10 18 q-2 4 -5 5 q3 -10 -4 -15 q-3 -2 -1 -8 z" fill="${dk}"/>
+    <ellipse cx="33" cy="33" rx="18" ry="12" fill="url(#${id})"/>
+    <path d="M21 28 Q15 24 11 14 L18 11 Q24 22 27 31 Z" fill="url(#${id})"/>
+    <path d="M11 14 L18 11 Q20 14 19 18 Q14 16 13 20 Z" fill="${dk2}"/>
+    <path d="M16 11 Q9 9 6 16 Q5 20 9 21 Q13 21 15 17 Q18 14 16 11 Z" fill="url(#${id})"/>
+    ${overlay}
+    <path d="M15 9 L18 4 L19.5 10 Z" fill="${dk}"/>
+    <path d="M14.5 9 Q12.5 4.5 15.5 3.5 Q16.5 7.5 17.5 10 Z" fill="${dk2}"/>
+    <ellipse cx="7.5" cy="18.5" rx="2.4" ry="1.9" fill="${dk}"/>
+    <circle cx="12" cy="15" r="1" fill="#241c16"/>
+    <ellipse cx="28" cy="27" rx="9" ry="3.3" fill="#fff" opacity=".18"/>
+  </svg>`;
+}
+function swatchStyle(c){
+  if(c==="tortilla") return "background:#E7D3A6;background-image:radial-gradient(#9a6630 22%,transparent 24%),radial-gradient(#b07d3c 20%,transparent 22%),radial-gradient(#8a5a2a 16%,transparent 18%);background-size:12px 12px,8px 8px,9px 9px;background-position:0 0,6px 4px,3px 8px";
+  if(c==="paint") return "background:#6F4A37;background-image:radial-gradient(circle at 32% 38%, #f6efe1 0 8px, transparent 9px),radial-gradient(circle at 70% 66%, #f6efe1 0 6px, transparent 7px),radial-gradient(circle at 60% 18%, #f6efe1 0 4px, transparent 5px)";
+  if(c==="appaloosa") return "background:#efe7d6;background-image:radial-gradient(#3a2a1f 20%,transparent 22%),radial-gradient(#3a2a1f 16%,transparent 18%);background-size:9px 9px,6px 6px;background-position:0 0,4px 5px";
+  return "background:"+c;
+}
+function horseBox(color,size=22){ return horse3D(color,size); }
+function pHorse(){ const h=S.user&&S.user.horses&&S.user.horses[0]; return h||{name:(S.user&&S.user.horse)||"Horse",color:(S.user&&S.user.color)||"#7A5341"}; }
+function dispName(){ return (S.user&&(S.user.nick||S.user.name))||"You"; }
+function firstName(s){ return (s||"").trim().split(" ")[0]; }
+function boardLabel(p){ return p.showHorse ? p.horse : (p.first || firstName(p.name||p.full)); }
+function userLabel(){ return S.user.showHorse ? pHorse().name : firstName(dispName()); }
+function escapeAttr(s){ return (s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+let toastT;
+function toast(msg){
+  clearTimeout(toastT);
+  let t=$("#toast"); if(t)t.remove();
+  const e=document.createElement("div"); e.id="toast"; e.className="toast"; e.textContent=msg;
+  document.body.appendChild(e);
+  toastT=setTimeout(()=>e.remove(),2200);
+}
+
+/* ---------- live weather (Open-Meteo, no key, ranch coords) ---------- */
+let weatherCache=null;
+function describeWx(code){
+  const m={0:["Clear","☀️"],1:["Mainly clear","🌤️"],2:["Partly cloudy","⛅"],3:["Overcast","☁️"],
+    45:["Fog","🌫️"],48:["Fog","🌫️"],51:["Light drizzle","🌦️"],53:["Drizzle","🌦️"],55:["Drizzle","🌦️"],
+    61:["Light rain","🌧️"],63:["Rain","🌧️"],65:["Heavy rain","🌧️"],66:["Freezing rain","🌧️"],67:["Freezing rain","🌧️"],
+    71:["Light snow","🌨️"],73:["Snow","🌨️"],75:["Heavy snow","❄️"],77:["Snow grains","🌨️"],
+    80:["Showers","🌦️"],81:["Showers","🌦️"],82:["Heavy showers","⛈️"],85:["Snow showers","🌨️"],86:["Snow showers","🌨️"],
+    95:["Thunderstorm","⛈️"],96:["Thunderstorm","⛈️"],99:["Thunderstorm","⛈️"]};
+  return m[code]||["—","🌤️"];
+}
+function applyWx(d){
+  const t=$("#wxTemp"),i=$("#wxIcon"),de=$("#wxDesc"); if(!t)return;
+  const [desc,emo]=describeWx(d.code);
+  t.textContent=`${Math.round(d.temp)}°F · ${desc}`;
+  i.textContent=emo;
+  de.textContent=`Marana / Tucson, AZ · wind ${Math.round(d.wind)} mph`;
+}
+function loadWeather(){
+  if(weatherCache && Date.now()-weatherCache.t<1800000){ applyWx(weatherCache); return; }
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=32.4&longitude=-111.12&current=temperature_2m,wind_speed_10m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FPhoenix")
+    .then(r=>r.json())
+    .then(j=>{ const c=j.current; weatherCache={temp:c.temperature_2m,wind:c.wind_speed_10m,code:c.weather_code,t:Date.now()}; applyWx(weatherCache); })
+    .catch(()=>{ const t=$("#wxTemp"),de=$("#wxDesc"); if(t){t.textContent="Weather unavailable";if(de)de.textContent="Marana / Tucson, AZ";} });
+}
+function announcementCard(a){
+  return `<div class="card" style="padding:13px;margin-bottom:10px;border-left:3px solid var(--brass)">
+    <div style="display:flex;gap:10px;align-items:flex-start">
+      <div style="width:30px;height:30px;border-radius:9px;background:var(--leather);color:#fff;display:grid;place-items:center;font-weight:700;flex:none">B</div>
+      <div style="flex:1"><div style="font-size:14px;color:#352f27">${escapeHtml(a.txt)}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px">📣 ${a.by} · ${a.when}</div></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- product illustrations (inline SVG, branded palette) ---------- */
+function prodSVG(kind){
+  const P="#7A5341",L="#B07A70",B="#C7A267",C="#FBF6EE",D="#2E2620";
+  const wrap=(inner)=>`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+  switch(kind){
+    case "flymask": return wrap(`<path d="M30 32 Q50 20 70 32 L74 58 Q50 74 26 58 Z" fill="${P}"/><ellipse cx="40" cy="46" rx="9" ry="11" fill="${C}" opacity=".9"/><ellipse cx="60" cy="46" rx="9" ry="11" fill="${C}" opacity=".9"/><path d="M40 38 l0 16 M44 38 l0 16 M48 38 l0 16 M56 38 l0 16 M60 38 l0 16 M64 38 l0 16" stroke="${P}" stroke-width="1.4" opacity=".5"/><path d="M50 74 l0 9" stroke="${B}" stroke-width="3"/>`);
+    case "lead": return wrap(`<circle cx="50" cy="30" r="11" fill="none" stroke="${B}" stroke-width="5"/><path d="M50 41 q-16 14 -8 30 q5 12 -6 18" fill="none" stroke="${L}" stroke-width="7" stroke-linecap="round"/><path d="M50 41 q16 14 8 30 q-5 12 6 18" fill="none" stroke="${P}" stroke-width="7" stroke-linecap="round" opacity=".55"/>`);
+    case "pick": return wrap(`<rect x="44" y="22" width="12" height="34" rx="5" fill="${L}"/><path d="M50 56 q2 18 16 22" fill="none" stroke="${B}" stroke-width="7" stroke-linecap="round"/><circle cx="50" cy="22" r="6" fill="${B}"/>`);
+    case "brush": return wrap(`<rect x="24" y="36" width="52" height="20" rx="9" fill="${L}"/><path d="M28 56 l0 16 M36 56 l0 18 M44 56 l0 16 M52 56 l0 18 M60 56 l0 16 M68 56 l0 18 M72 56 l0 14 M32 56 l0 18 M48 56 l0 16 M56 56 l0 18 M64 56 l0 16" stroke="${D}" stroke-width="2.4" opacity=".7"/>`);
+    case "cap": return wrap(`<path d="M22 56 Q50 22 78 56 Z" fill="${P}"/><path d="M22 56 Q14 58 14 64 L48 64 Q22 60 22 56" fill="${P}" opacity=".8"/><path d="M22 56 L78 56 L78 62 Q50 70 22 62 Z" fill="${P}"/><circle cx="50" cy="30" r="3" fill="${B}"/>`);
+    case "tee": return wrap(`<path d="M34 28 L24 38 L30 46 L34 42 L34 74 L66 74 L66 42 L70 46 L76 38 L66 28 Q50 38 34 28" fill="${B}"/><text x="50" y="58" font-family="Bricolage Grotesque,sans-serif" font-size="11" font-weight="700" fill="${D}" text-anchor="middle">FAAR</text>`);
+    case "hoodie": return wrap(`<path d="M30 30 L24 40 L30 46 L33 43 L33 76 L67 76 L67 43 L70 46 L76 40 L70 30 Q61 25 58 26 L42 26 Q39 25 30 30Z" fill="${P}"/><path d="M42 26 Q50 35 58 26 Q54 31 50 31 Q46 31 42 26Z" fill="${D}" opacity=".5"/><rect x="40" y="58" width="20" height="13" rx="3" fill="${D}" opacity=".22"/><path d="M47 31 l-1 11 M53 31 l1 11" stroke="${B}" stroke-width="2" stroke-linecap="round"/><text x="50" y="52" font-family="Bricolage Grotesque,sans-serif" font-size="9" font-weight="700" fill="${C}" text-anchor="middle">FAAR</text>`);
+    case "trucker": return wrap(`<path d="M22 56 Q50 26 78 56 Z" fill="${P}"/><path d="M22 56 L78 56 L78 62 Q50 70 22 62 Z" fill="${P}"/><path d="M22 56 Q50 30 64 46 L40 56 Z" fill="${C}"/><path d="M30 50 l0 6 M36 47 l0 9 M42 45 l0 11 M48 45 l0 11" stroke="${P}" stroke-width="1.3" opacity=".4"/><circle cx="40" cy="49" r="3" fill="${B}"/>`);
+    case "tote": return wrap(`<rect x="30" y="38" width="40" height="38" rx="4" fill="${L}"/><path d="M40 38 Q40 24 50 24 Q60 24 60 38" fill="none" stroke="${P}" stroke-width="4"/><text x="50" y="62" font-family="Bricolage Grotesque,sans-serif" font-size="12" font-weight="700" fill="${C}" text-anchor="middle">FAAR</text>`);
+    case "treats": return wrap(`<rect x="26" y="40" width="48" height="34" rx="6" fill="${L}"/><path d="M26 40 L74 40 L70 30 L30 30 Z" fill="${P}"/><circle cx="40" cy="56" r="4" fill="${B}"/><circle cx="54" cy="60" r="4" fill="${B}"/><circle cx="60" cy="50" r="3.5" fill="${B}"/><circle cx="46" cy="48" r="3" fill="${B}"/>`);
+    case "spray": return wrap(`<rect x="38" y="38" width="24" height="36" rx="5" fill="${P}"/><rect x="42" y="48" width="16" height="20" rx="2" fill="${C}" opacity=".85"/><path d="M44 38 L44 28 L60 28 L60 34" fill="none" stroke="${L}" stroke-width="5" stroke-linecap="round"/><path d="M60 30 l10 -3 M60 33 l10 1 M60 36 l9 5" stroke="${B}" stroke-width="2" stroke-linecap="round"/>`);
+    default: return wrap(`<circle cx="50" cy="50" r="20" fill="${P}"/>`);
+  }
+}
+
+/* ---------- icons ---------- */
+const ICON = {
+  barn:`<svg viewBox="0 0 24 24"><path d="M3 10l9-6 9 6"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>`,
+  feed:`<svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>`,
+  hire:`<svg viewBox="0 0 24 24"><path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"/><path d="M9 7V5h6v2"/></svg>`,
+  shop:`<svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+  rides:`<svg viewBox="0 0 24 24"><path d="M5 18a3 3 0 1 0 0-2 3 3 0 0 0 0 2z" transform="translate(-1 1)"/><path d="M4 17l4-6 3 2 4-6"/><path d="M15 7h4l1 4"/></svg>`,
+};
+
+/* =====================  RENDER  ===================== */
+function render(){
+  if(!S.user){ renderOnboard(); return; }
+  if(S.owner){ renderOwner(); return; }
+  renderApp();
+}
+
+/* ---------- onboarding ---------- */
+function renderOnboard(){
+  shell.innerHTML = `
+  <div class="onboard">
+    <div class="hero">
+      <div class="mk logo"><img src="${LOGO}" alt="ForEver After All Ranch logo" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="fallback" style="display:none">${horseGlyph(28)}</span></div>
+      <h1>ForEver After<br>All Ranch.</h1>
+      <p>Where horse loves find their ForEver home. Check in, keep up with the herd, and care for your horse together.</p>
+    </div>
+    <div class="ob-body">
+      <p class="eyebrow" style="margin-bottom:8px">Your ranch pass</p>
+      <label class="photo-drop" id="drop" for="photoInput">
+        <div class="ph" id="dropph"><span class="ic">📷</span><b style="font-weight:600;color:var(--ink)">Take a photo with your horse</b><span style="font-size:12px">This is your sign-up. Tap to use your camera.</span></div>
+        <div class="frame"></div>
+      </label>
+      <input id="photoInput" type="file" accept="image/*" capture="environment" class="hidden">
+      <div class="row2">
+        <div class="field"><label>Your name</label><input id="inName" placeholder="e.g. Marcy" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="next"></div>
+        <div class="field"><label>Horse's name</label><input id="inHorse" placeholder="e.g. Biscuit" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="next"></div>
+      </div>
+      <div class="field"><label>Breed / color <span style="text-transform:none;font-weight:400">(optional)</span></label><input id="inBreed" placeholder="e.g. Bay Quarter Horse" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done"></div>
+      <button class="btn" id="joinBtn" style="margin-top:6px">Create my ranch pass</button>
+      <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px">By joining you agree to be kind to people and horses. 🐴</p>
+    </div>
+  </div>`;
+
+  let photoData=null;
+  $("#photoInput").addEventListener("change",e=>{
+    const f=e.target.files[0]; if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{ photoData=ev.target.result;
+      $("#drop").innerHTML=`<img src="${photoData}" alt="your horse"><div class="frame"></div>`;
+    };
+    r.readAsDataURL(f);
+  });
+  $("#joinBtn").addEventListener("click",()=>{
+    const name=$("#inName").value.trim(), horse=$("#inHorse").value.trim();
+    if(!name||!horse){ toast("Add your name and your horse's name"); return; }
+    S.user={name, nick:name, breed:$("#inBreed").value.trim(), photo:photoData, horses:[{name:horse,color:"#7A5341"}], color:"#7A5341"};
+    S.view="barn"; save(); render();
+    toast(`Welcome, ${name} 🐴`);
+  });
+}
+function horseGlyph(s=24){
+  return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M6 21c-1-3-2-5-2-8 0-2 1-4 3-5l-1-3 3 1 2-2 1 3c3 0 5 2 6 5l2 1-1 2-2-1c0 3-1 6-3 8l1 2h-3l-1-2h-2l-1 2H5z"/></svg>`;
+}
+
+/* ---------- main app chrome ---------- */
+function renderApp(){
+  shell.innerHTML = `
+    ${topbar()}
+    <div class="body" id="body"></div>
+    ${tabs()}
+  `;
+  bindChrome();
+  renderView();
+}
+function topbar(){
+  return `<div class="topbar">
+    <div class="brand" id="brand">
+      <div class="mark logo"><img src="${LOGO}" alt="ForEver After All Ranch logo" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="fallback" style="display:none">${horseGlyph(18)}</span></div>
+      <div><b>ForEver After All</b><small>Ranch · Tucson, AZ</small></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="status-pill"><span class="dot ${S.checkedIn?'on':''}"></span>${S.checkedIn?'At the ranch':'Away'}</div>
+    <button id="bellBtn" class="icon-btn" aria-label="Notifications">
+      <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      <span id="bellBadge" class="nbadge" style="${S.notifs.filter(n=>!n.read).length?'':'display:none'}">${S.notifs.filter(n=>!n.read).length}</span>
+    </button>
+    <button id="profBtn" style="padding:0;border-radius:9px" aria-label="Your profile">${avatar(S.user.photo,pHorse().color,S.user.name,30)}</button>
+  </div>`;
+}
+function tabs(){
+  const T=[["barn","Ranch"],["feed","Feed"],["hire","Hire"],["shop","Shop"],["rides","Rides"]];
+  return `<nav class="tabs">${T.map(([k,l])=>`
+    <button class="tab ${S.view===k?'active':''}" data-tab="${k}">
+      <span class="ix">${ICON[k]}</span>${l}
+    </button>`).join("")}</nav>`;
+}
+function bindChrome(){
+  shell.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{S.view=b.dataset.tab;renderApp();});
+  const pb=$("#profBtn"); if(pb)pb.onclick=openProfile;
+  const bell=$("#bellBtn"); if(bell)bell.onclick=openNotifs;
+}
+function renderView(){
+  const b=$("#body"); if(!b)return;
+  const map={barn:viewBarn,feed:viewFeed,hire:viewHire,shop:viewShop,rides:viewRides,profile:viewProfile,notifs:viewNotifs,ride:viewRide};
+  b.innerHTML=map[S.view]();
+  ({barn:bindBarn,feed:bindFeed,hire:bindHire,shop:bindShop,rides:bindRides,profile:bindProfile,notifs:bindNotifs,ride:bindRide}[S.view])();
+}
+
+/* ---------- BARN / check-in ---------- */
+function viewBarn(){
+  const ph=pHorse();
+  const onBoard = S.checkedIn ? [{first:firstName(dispName()), name:dispName(), full:S.user.name, contact:S.user.contact||"", horse:ph.name, since:0, color:ph.color, me:true, showHorse:!!S.user.showHorse},...S.board] : S.board;
+  return `<div class="view">
+    <p class="eyebrow" id="boardTrigger" style="user-select:none;-webkit-user-select:none;cursor:default">The board</p>
+    <h1 class="title">At the ranch</h1>
+    <p class="sub">Tap your nameplate up when you arrive so owners and friends know you're on the property.</p>
+
+    <div class="card checkin-card">
+      <button class="big-toggle ${S.checkedIn?'on':''}" id="ci">
+        <div><div class="ic">${S.checkedIn?'🐴':'📍'}</div><div class="lbl">${S.checkedIn?"YOU'RE HERE":"CHECK IN"}</div></div>
+      </button>
+      <p style="font-size:13px;color:var(--muted);margin:4px 0 0">${S.checkedIn?`Hang tight, ${dispName().split(" ")[0]} — you're checked in with ${ph.name}.`:"Press when you reach the property."}</p>
+    </div>
+
+    <div class="section-label"><h2>On the property now</h2><span class="ln"></span><span style="font-size:12px;color:var(--muted);font-weight:600">${onBoard.length}</span></div>
+    <div class="board">
+      ${onBoard.length? onBoard.map(p=>`
+        <div class="plate" ${p.me?'style="box-shadow:inset 0 1px 1px rgba(255,255,255,.55), 0 0 0 2px var(--pine), var(--shadow)"':''}>
+          ${horse3D(p.color,42)}
+          <div style="flex:1"><div class="pname">${boardLabel(p)}${p.me?' · you':''}</div><div class="pmeta">on the property · ${p.since===0?'just now':p.since+'m ago'}</div></div>
+        </div>`).join("")
+      : `<div class="empty">Nobody's checked in yet. Be the first! 🤠</div>`}
+    </div>
+
+    <div class="section-label"><h2>Weather at the ranch</h2><span class="ln"></span></div>
+    <div class="card" style="padding:14px" id="wxCard">
+      <div style="display:flex;gap:11px;align-items:center">
+        <span style="font-size:26px" id="wxIcon">🌤️</span>
+        <div><b style="font-size:15px" id="wxTemp">Checking the sky…</b><div style="font-size:12px;color:var(--muted)" id="wxDesc">Marana / Tucson, AZ</div></div>
+      </div>
+    </div>
+
+    <div class="section-label"><h2>Bryanna's announcements</h2><span class="ln"></span></div>
+    <div id="annList">
+      ${S.announcements.map(a=>announcementCard(a)).join("")}
+    </div>
+  </div>`;
+}
+function bindBarn(){
+  loadWeather();
+  const trig=$("#boardTrigger");
+  if(trig){
+    let t=null;
+    const start=(e)=>{ try{ trig.setPointerCapture(e.pointerId); }catch(_){} clearTimeout(t); t=setTimeout(()=>askOwner(),2000); };
+    const stop=()=>{ clearTimeout(t); t=null; };
+    trig.addEventListener("pointerdown",start);
+    trig.addEventListener("pointerup",stop);
+    trig.addEventListener("pointercancel",stop);
+    trig.addEventListener("contextmenu",e=>e.preventDefault());
+  }
+  const btn=$("#ci"); if(!btn)return;
+  btn.onclick=()=>{
+    S.checkedIn=!S.checkedIn;
+    toast(S.checkedIn?"Checked in — your nameplate's up 🐴":"Checked out. Ride safe!");
+    renderApp();
+  };
+}
+
+/* ---------- FEED ---------- */
+function viewFeed(){
+  return `<div class="view">
+    <p class="eyebrow">The herd</p>
+    <h1 class="title">Barn feed</h1>
+    <p class="sub">Horse talk, property notes, lost & found — keep the barn in the loop.</p>
+    <div class="composer">
+      ${avatar(S.user.photo,pHorse().color,S.user.name,38)}
+      <textarea id="postBox" placeholder="What's happening at the ranch?" autocapitalize="sentences" enterkeyhint="send"></textarea>
+      <button class="btn brass sm" id="postBtn" style="padding:10px 14px">Post</button>
+    </div>
+    ${S.feed.map(p=>`
+      <div class="card post" data-pid="${p.id}">
+        <div class="head">
+          ${avatar(null,p.color,p.who,32)}
+          <div style="flex:1"><div class="who">${p.who} ${horseBox(p.color,18)} <span style="color:var(--muted);font-weight:400">· ${p.horse}</span></div><div class="when">${p.when}</div></div>
+          <span class="tag">${p.tag}</span>
+        </div>
+        <div class="txt">${escapeHtml(p.txt)}</div>
+        <div class="acts">
+          <button class="likeBtn ${p.liked?'liked':''}" data-pid="${p.id}">${p.liked?'♥':'♡'} ${p.likes}</button>
+          <button class="replyBtn" data-pid="${p.id}">💬 Reply${(p.replies&&p.replies.length)?' · '+p.replies.length:''}</button>
+        </div>
+        ${(p.replies&&p.replies.length)?`<div class="reply-list">${p.replies.map(r=>`
+          <div class="reply">${avatar(null,r.color,r.who,26)}
+            <div><span class="rwho">${r.who}</span> ${horseBox(r.color,15)} <span class="rwhen">· ${r.when}</span><div class="rtxt">${escapeHtml(r.txt)}</div></div>
+          </div>`).join("")}</div>`:""}
+        ${S.replyOpen===p.id?`<div class="reply-box"><input id="replyInput" placeholder="Write a reply…" autocomplete="off" autocapitalize="sentences" enterkeyhint="send"><button class="btn brass sm replySend" data-pid="${p.id}" style="padding:9px 13px">Send</button></div>`:""}
+      </div>`).join("")}
+  </div>`;
+}
+function bindFeed(){
+  $("#postBtn").onclick=()=>{
+    const v=$("#postBox").value.trim(); if(!v)return;
+    S.feed.unshift({id:Date.now(),who:userLabel(),horse:pHorse().name,tag:"horses",txt:v,when:"now",color:pHorse().color,likes:0,liked:false,replies:[]});
+    save(); renderView(); toast("Posted to the feed");
+    setTimeout(()=>addNotif("like", randomPerson(), "liked your post"), 4500);
+  };
+  shell.querySelectorAll(".likeBtn").forEach(b=>b.onclick=()=>{
+    const p=S.feed.find(x=>x.id==b.dataset.pid);
+    p.liked=!p.liked; p.likes+=p.liked?1:-1; save(); renderView();
+  });
+  shell.querySelectorAll(".replyBtn").forEach(b=>b.onclick=()=>{
+    const id=Number(b.dataset.pid); S.replyOpen = S.replyOpen===id?null:id; renderView();
+    const ri=$("#replyInput"); if(ri)ri.focus();
+  });
+  shell.querySelectorAll(".replySend").forEach(b=>b.onclick=()=>{
+    const id=Number(b.dataset.pid), v=$("#replyInput").value.trim(); if(!v)return;
+    const p=S.feed.find(x=>x.id===id); if(!p.replies)p.replies=[];
+    p.replies.push({who:userLabel(),color:pHorse().color,txt:v,when:"now"});
+    S.replyOpen=null; save(); renderView(); toast("Reply added");
+    setTimeout(()=>addNotif("commentlike", randomPerson(), "liked your comment"), 5000);
+  });
+}
+
+/* ---------- HIRE ---------- */
+function viewHire(){
+  return `<div class="view">
+    <p class="eyebrow">Trusted pros</p>
+    <h1 class="title">Hire a pro</h1>
+    <p class="sub">Vets, farriers, trainers and bodyworkers the barn already knows. Request a visit to your horse.</p>
+    ${PROS.map((p,i)=>`
+      <div class="card pro">
+        <div class="av">${p.ic}</div>
+        <div style="flex:1">
+          <div class="role">${p.role}</div>
+          <div class="nm">${p.nm}</div>
+          <div class="meta">${p.meta}</div>
+          <div style="margin-top:3px"><span class="stars">${'★'.repeat(p.stars)}${'☆'.repeat(5-p.stars)}</span> <span style="font-size:11px;color:var(--muted)">· ${p.rate}</span></div>
+        </div>
+        <button class="btn leather sm reqBtn" data-i="${i}" style="align-self:center">Request</button>
+      </div>`).join("")}
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px">Want to be listed? Ask the barn office to add you.</p>
+  </div>`;
+}
+function bindHire(){
+  shell.querySelectorAll(".reqBtn").forEach(b=>b.onclick=()=>{
+    toast(`Request sent to ${PROS[b.dataset.i].nm} 🐴`);
+  });
+}
+
+/* ---------- SHOP ---------- */
+function viewShop(){
+  return `<div class="view">
+    <p class="brandtag">ForEver After All · branded gear</p>
+    <h1 class="title">The tack shop</h1>
+    <p class="sub">Barn-branded essentials and treats. Pick up at the office or have it dropped at your stall.</p>
+    <div class="shop-grid">
+      ${PRODUCTS.map(p=>`
+        <div class="card prod">
+          <div class="pic">${prodSVG(p.svg)}</div>
+          <div class="info">
+            <div class="pn">${p.nm}</div>
+            <div class="pp">$${p.price}</div>
+            <button class="btn ghost add addBtn" data-id="${p.id}">Add to cart</button>
+          </div>
+        </div>`).join("")}
+    </div>
+    <div style="height:60px"></div>
+  </div>
+  <button class="cart-fab ${S.cart?'':'hidden'}" id="cartFab">🛒<span class="badge" id="cartBadge">${S.cart}</span></button>`;
+}
+function bindShop(){
+  shell.querySelectorAll(".addBtn").forEach(b=>b.onclick=()=>{
+    S.cart++; const f=$("#cartFab"); if(f){f.classList.remove("hidden");$("#cartBadge").textContent=S.cart;}
+    toast("Added to cart");
+  });
+  const fab=$("#cartFab"); if(fab)fab.onclick=()=>toast(`${S.cart} item(s) — checkout coming soon`);
+}
+
+/* ---------- RIDES ---------- */
+function viewRides(){
+  return `<div class="view">
+    <p class="eyebrow">Saddle up</p>
+    <h1 class="title">Group rides</h1>
+    <p class="sub">Tap a ride to reserve your spot and join the ride chat. Open to all boarders — beginners welcome on easy trails.</p>
+    ${RIDES.map(r=>{
+      const joined=S.joined[r.id]; const taken=r.taken+(joined?1:0); const left=r.cap-taken;
+      const dl={easy:'easy',mod:'moderate',adv:'advanced'}[r.diff];
+      const chatCount=(S.rideChats[r.id]||[]).length;
+      return `<button class="card ride rideCard" data-id="${r.id}" style="width:100%;text-align:left;display:block">
+        <div class="date">
+          <div class="cal"><div class="m">${r.m}</div><div class="d">${r.d}</div></div>
+          <div style="flex:1"><div class="rn">${r.nm}</div><div class="rmeta">${r.time} · ${r.guide}</div></div>
+          <span class="chip ${r.diff}">${dl}</span>
+        </div>
+        <div class="spots">${left>0?`<b>${left} spot${left>1?'s':''}</b> left of ${r.cap}`:`<b>Full</b> — waitlist`}${joined?` · <span style="color:var(--good)">✓ Signed up!</span>`:''}</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--leather);font-weight:600;margin-top:2px">💬 ${chatCount?chatCount+' messages':'Open ride chat'}<span style="margin-left:auto;color:var(--muted);font-size:18px;font-weight:700">›</span></div>
+      </button>`;
+    }).join("")}
+  </div>`;
+}
+function bindRides(){
+  shell.querySelectorAll(".rideCard").forEach(b=>b.onclick=()=>{ S.rideOpen=Number(b.dataset.id); S.view="ride"; renderApp(); });
+}
+function chatBubble(m){
+  return `<div class="card" style="padding:10px 12px;margin-bottom:8px;display:flex;gap:9px;align-items:flex-start">
+    ${avatar(null,m.color,m.who,30)}
+    <div style="flex:1"><div style="font-size:12.5px"><b>${m.who}</b> <span style="color:var(--muted);font-size:11px">· ${m.when}</span></div>
+    <div style="font-size:13.5px;color:#352f27;margin-top:1px">${escapeHtml(m.txt)}</div></div>
+  </div>`;
+}
+function viewRide(){
+  const r=RIDES.find(x=>x.id===S.rideOpen);
+  if(!r){ S.view="rides"; return viewRides(); }
+  const joined=S.joined[r.id]; const taken=r.taken+(joined?1:0); const left=r.cap-taken;
+  const dl={easy:'easy',mod:'moderate',adv:'advanced'}[r.diff];
+  const msgs=S.rideChats[r.id]||[];
+  return `<div class="view">
+    <button class="back-btn" id="rdBack">‹ All rides</button>
+    <div class="card" style="padding:14px;margin-bottom:14px">
+      <div class="date">
+        <div class="cal"><div class="m">${r.m}</div><div class="d">${r.d}</div></div>
+        <div style="flex:1"><div class="rn">${r.nm}</div><div class="rmeta">${r.time} · ${r.guide}</div></div>
+        <span class="chip ${r.diff}">${dl}</span>
+      </div>
+      <div class="spots" style="margin:9px 0 10px">${left>0?`<b>${left} spot${left>1?'s':''}</b> left of ${r.cap}`:`<b>Full</b> — join the waitlist`}</div>
+      <button class="btn ${joined?'ghost':''}" id="rdJoin">${joined?"✓ Signed up! — cancel":(left>0?'Reserve my spot':'Join waitlist')}</button>
+    </div>
+
+    <div class="section-label"><h2>Ride chat</h2><span class="ln"></span></div>
+    <p class="sub" style="margin-top:-4px">Ask the group anything about this ride — meeting spot, pace, what to bring.</p>
+    <div id="rideMsgs">
+      ${msgs.length? msgs.map(m=>chatBubble(m)).join("") : `<div class="empty">No messages yet. Say hi 👋</div>`}
+    </div>
+    <div class="reply-box" style="margin-top:12px"><input id="rideInput" placeholder="Message the group…" autocomplete="off" autocapitalize="sentences" enterkeyhint="send"><button class="btn brass sm" id="rideSend" style="padding:10px 14px">Send</button></div>
+    <div style="height:14px"></div>
+  </div>`;
+}
+function bindRide(){
+  const back=$("#rdBack"); if(back)back.onclick=()=>{ S.view="rides"; renderApp(); };
+  const j=$("#rdJoin"); if(j)j.onclick=()=>{
+    const r=RIDES.find(x=>x.id===S.rideOpen); S.joined[r.id]=!S.joined[r.id];
+    toast(S.joined[r.id]?"Signed up! 🐎":"Reservation cancelled"); renderView();
+  };
+  const send=()=>{
+    const inp=$("#rideInput"), v=(inp&&inp.value.trim())||""; if(!v)return;
+    if(!S.rideChats[S.rideOpen])S.rideChats[S.rideOpen]=[];
+    S.rideChats[S.rideOpen].push({who:userLabel(),color:pHorse().color,txt:v,when:"now"});
+    save(); renderView();
+    const bd=$("#body"); if(bd) requestAnimationFrame(()=>{ bd.scrollTop=bd.scrollHeight; });
+  };
+  const sb=$("#rideSend"); if(sb)sb.onclick=send;
+  const inp=$("#rideInput"); if(inp)inp.onkeydown=e=>{ if(e.key==="Enter")send(); };
+}
+
+/* ---------- NOTIFICATIONS ---------- */
+function randomPerson(){ return SIMPLE_PEOPLE[Math.floor(Math.random()*SIMPLE_PEOPLE.length)]; }
+function addNotif(type,p,text){
+  S.notifs.unshift({id:Date.now(),type,who:p.who,color:p.color,text,when:"now",read:false});
+  save(); updateBell();
+}
+function updateBell(){
+  const b=$("#bellBadge"); if(!b)return;
+  const n=S.notifs.filter(x=>!x.read).length;
+  b.textContent=n; b.style.display=n?"grid":"none";
+}
+function niceType(t){ return t==="reply"?"Reply":t==="commentlike"?"Comment like":"Like"; }
+function openNotifs(){ S.notifs.forEach(n=>n.read=true); save(); S.view="notifs"; renderApp(); }
+function viewNotifs(){
+  return `<div class="view">
+    <button class="back-btn" id="ntBack">‹ Back to feed</button>
+    <p class="eyebrow">Activity</p>
+    <h1 class="title">Notifications</h1>
+    <p class="sub">When someone likes or replies to your posts and comments, it shows up here.</p>
+    ${S.notifs.length? S.notifs.map(n=>`
+      <div class="card notifRow" style="padding:11px 13px;margin-bottom:9px;display:flex;align-items:center;gap:11px">
+        ${avatar(null,n.color,n.who,34)}
+        <div style="flex:1"><div style="font-size:13.5px"><b>${n.who}</b> ${n.text}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:1px">${niceType(n.type)} · ${n.when}</div></div>
+        <span style="font-size:16px">${n.type==='reply'?'💬':'♥'}</span>
+      </div>`).join("") : `<div class="empty">No notifications yet.</div>`}
+  </div>`;
+}
+function bindNotifs(){
+  const back=$("#ntBack"); if(back)back.onclick=()=>{ S.view="feed"; renderApp(); };
+  shell.querySelectorAll(".notifRow").forEach(b=>b.onclick=()=>{ S.view="feed"; renderApp(); });
+}
+
+
+/* =====================  PROFILE  ===================== */
+function openProfile(){
+  S.prof={ nick:dispName(), photo:S.user.photo, showHorse:!!S.user.showHorse,
+    horses:(S.user.horses||[{name:S.user.horse||"",color:S.user.color||"#7A5341"}]).map(h=>({...h})) };
+  S.view="profile"; renderApp();
+}
+function syncProfileInputs(){
+  const n=$("#pfNick"); if(n)S.prof.nick=n.value;
+  shell.querySelectorAll(".hname").forEach(inp=>{ const i=+inp.dataset.i; if(S.prof.horses[i])S.prof.horses[i].name=inp.value; });
+}
+function viewProfile(){
+  const p=S.prof, primary=p.horses[0]||{color:"#7A5341"};
+  const previewLabel = p.showHorse ? (p.horses[0]&&p.horses[0].name?p.horses[0].name:"Your horse") : (p.nick||"You");
+  return `<div class="view">
+    <button class="back-btn" id="pfBack">‹ Back to the ranch</button>
+    <p class="eyebrow">Your profile</p>
+    <h1 class="title">${escapeHtml(p.nick||"You")}</h1>
+    <p class="sub">Change your nickname and photo, manage your horses, and choose what others see.</p>
+
+    <div class="card" style="padding:15px;margin-bottom:16px;display:flex;gap:13px;align-items:center;background:linear-gradient(165deg,#efe4cd,#e6d9bc)">
+      ${horse3D(primary.color,52)}
+      <div style="flex:1"><div style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600">On the board, others see</div>
+      <div style="display:flex;align-items:center;gap:7px;margin-top:4px"><b style="font-family:'Bricolage Grotesque';font-size:18px">${escapeHtml(previewLabel)}</b></div></div>
+    </div>
+
+    <div class="field"><label>Nickname</label><input id="pfNick" value="${escapeAttr(p.nick)}" placeholder="What should everyone call you?" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done"></div>
+    <button class="btn ghost sm" id="pfPhotoBtn" style="margin-bottom:4px">Change photo</button>
+    <input id="pfPhoto" type="file" accept="image/*" capture="environment" class="hidden">
+
+    <div class="section-label"><h2>Privacy</h2><span class="ln"></span></div>
+    <div class="card" style="padding:13px;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="flex:1"><div style="font-weight:600;font-size:13.5px">Show my horse's name, not mine</div>
+        <div style="font-size:12px;color:var(--muted)">On the property board and feed, others see your horse's name instead of your name. Ranch staff always see your real name.</div></div>
+        <button class="switch ${p.showHorse?'on':''}" id="privSwitch" aria-label="toggle privacy"></button>
+      </div>
+    </div>
+
+    <div class="section-label"><h2>Your horses</h2><span class="ln"></span><span style="font-size:12px;color:var(--muted);font-weight:600">${p.horses.length}</span></div>
+    ${p.horses.map((h,i)=>`
+      <div class="card hcard">
+        <div class="hrow">
+          ${horse3D(h.color,34)}
+          <input class="hname" data-i="${i}" value="${escapeAttr(h.name)}" placeholder="Horse's name" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done">
+          ${p.horses.length>1?`<button class="xbtn rmHorse" data-i="${i}" aria-label="remove horse">✕</button>`:""}
+        </div>
+        <div>
+          <div style="font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Coat color</div>
+          <div class="swatches">${HCOLORS.map(c=>`<button class="swatch ${c.toLowerCase()===(h.color||"").toLowerCase()?'sel':''}" data-i="${i}" data-c="${c}" style="${swatchStyle(c)}" aria-label="${c[0]==='#'?'pick color':c+' coat'}"></button>`).join("")}</div>
+        </div>
+      </div>`).join("")}
+    <button class="btn ghost" id="addHorse" style="margin-bottom:16px">+ Add another horse</button>
+
+    <button class="btn" id="pfSave">Save profile</button>
+    <div style="height:24px"></div>
+  </div>`;
+}
+function bindProfile(){
+  $("#pfBack").onclick=()=>{ S.view="barn"; renderApp(); };
+  const pb=$("#pfPhotoBtn"), pi=$("#pfPhoto");
+  if(pb)pb.onclick=()=>pi.click();
+  if(pi)pi.onchange=e=>{ const f=e.target.files[0]; if(!f)return; const r=new FileReader();
+    r.onload=ev=>{ syncProfileInputs(); S.prof.photo=ev.target.result; renderView(); }; r.readAsDataURL(f); };
+  shell.querySelectorAll(".swatch").forEach(sw=>sw.onclick=()=>{ syncProfileInputs(); S.prof.horses[+sw.dataset.i].color=sw.dataset.c; renderView(); });
+  shell.querySelectorAll(".rmHorse").forEach(b=>b.onclick=()=>{ syncProfileInputs(); S.prof.horses.splice(+b.dataset.i,1); renderView(); });
+  const ah=$("#addHorse"); if(ah)ah.onclick=()=>{ syncProfileInputs(); S.prof.horses.push({name:"",color:"#A6764E"}); renderView(); };
+  const ps=$("#privSwitch"); if(ps)ps.onclick=()=>{ syncProfileInputs(); S.prof.showHorse=!S.prof.showHorse; renderView(); };
+  $("#pfSave").onclick=()=>{
+    syncProfileInputs();
+    const horses=S.prof.horses.map(h=>({name:(h.name||"").trim(),color:h.color})).filter(h=>h.name);
+    if(!horses.length){ toast("Add at least one horse"); return; }
+    S.user.nick=(S.prof.nick||"").trim()||S.user.name;
+    S.user.photo=S.prof.photo;
+    S.user.showHorse=!!S.prof.showHorse;
+    S.user.horses=horses;
+    S.user.horse=horses[0].name;
+    S.user.color=horses[0].color;
+    save(); S.view="barn"; renderApp(); toast("Profile saved 🐴");
+  };
+}
+
+/* =====================  OWNER MODE  ===================== */
+function askOwner(){
+  const scrim=document.createElement("div"); scrim.className="scrim"; scrim.id="scrim";
+  scrim.innerHTML=`<div class="modal">
+    <h3>Operator access</h3>
+    <p>Private — Bryanna & staff only. Enter your 4-digit PIN.</p>
+    <input id="pw" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off" style="letter-spacing:.6em;text-align:center;font-size:22px">
+    <div style="display:flex;gap:9px">
+      <button class="btn ghost" id="pwCancel" style="flex:1">Cancel</button>
+      <button class="btn leather" id="pwGo" style="flex:1">Unlock</button>
+    </div>
+  </div>`;
+  document.body.appendChild(scrim);
+  $("#pw").focus();
+  const close=()=>scrim.remove();
+  scrim.onclick=e=>{if(e.target===scrim)close();};
+  $("#pwCancel").onclick=close;
+  const go=()=>{ if($("#pw").value===S.pin){ close(); S.owner=true; render(); toast("Operator unlocked 🔑"); } else { toast("Wrong PIN"); $("#pw").value=""; } };
+  $("#pwGo").onclick=go;
+  $("#pw").onkeydown=e=>{if(e.key==="Enter")go();};
+}
+function fmtTime(t){ if(!t)return ""; const p=t.split(":"); let H=+p[0]; const M=p[1]; const ap=H<12?"AM":"PM"; let h=H%12; if(h===0)h=12; return h+":"+M+" "+ap; }
+function timeToMin(t){ if(!t)return 0; const p=t.split(":"); return (+p[0])*60+(+p[1]); }
+function todayLabel(){ try{ return new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}); }catch(e){ return "Today"; } }
+function confirmModal(title,msg,yesLabel,onYes){
+  const scrim=document.createElement("div"); scrim.className="scrim";
+  scrim.innerHTML=`<div class="modal"><h3>${title}</h3><p>${msg}</p>
+    <div style="display:flex;gap:9px"><button class="btn ghost" id="cmNo" style="flex:1">Cancel</button>
+    <button class="btn leather" id="cmYes" style="flex:1">${yesLabel||"Confirm"}</button></div></div>`;
+  document.body.appendChild(scrim);
+  const close=()=>scrim.remove();
+  scrim.onclick=e=>{ if(e.target===scrim)close(); };
+  $("#cmNo").onclick=close;
+  $("#cmYes").onclick=()=>{ close(); onYes(); };
+}
+function opTop(){
+  return `<div class="topbar">
+    <div class="brand"><div class="mark" style="background:linear-gradient(160deg,#caa05a,var(--leather))">🔑</div>
+      <div><b>Ranch Office</b><small>Owner dashboard</small></div></div>
+    <div class="spacer"></div>
+    <button class="btn ghost sm" id="exitOwner" style="color:#EDE6D6;border-color:rgba(255,255,255,.25)">Exit</button>
+  </div>
+  <div class="owner-banner">🔒 Private — Bryanna & staff only<span class="x"></span></div>`;
+}
+function renderOwner(){
+  if(S.ownerHorse!=null){ renderHorseDetail(S.ownerHorse); return; }
+  const due=S.horses.filter(h=>h.balance>0).reduce((a,h)=>a+h.balance,0);
+  const medsLeft=S.horses.reduce((a,h)=>a+h.meds.filter(m=>!m.given).length,0);
+  const inPasture=S.horses.filter(h=>h.location==='pasture').length;
+  const onProp=(S.checkedIn?[{full:S.user.name,contact:S.user.contact||"—",horse:pHorse().name,color:pHorse().color,me:true}]:[])
+    .concat(S.board.map(b=>({full:b.full||b.name,contact:b.contact||"—",horse:b.horse,color:b.color})));
+  const tab=S.opTab;
+
+  const medItems=[];
+  S.horses.forEach((h,hi)=>h.meds.forEach((m,mi)=>medItems.push({hi,mi,horse:h.name,color:h.color,n:m.n,dose:m.dose,time:m.time||"07:00",given:m.given})));
+  medItems.sort((a,b)=>(timeToMin(a.time)-timeToMin(b.time)) || a.horse.localeCompare(b.horse));
+  const medDone=medItems.filter(i=>i.given).length;
+
+  const today = `
+      <div style="margin-bottom:14px"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--leather);font-weight:600">Today</div>
+      <div style="font-family:'Bricolage Grotesque';font-weight:700;font-size:22px;letter-spacing:-.01em">${todayLabel()}</div></div>
+      <div class="stat-row">
+        <div class="card stat"><div class="n">${S.horses.length}</div><div class="l">Horses</div></div>
+        <div class="card stat"><div class="n">${medItems.length-medDone}</div><div class="l">Meds left</div></div>
+        <div class="card stat"><div class="n">${onProp.length}</div><div class="l">Here now</div></div>
+      </div>
+
+      <div class="section-label"><h2>Today's meds</h2><span class="ln"></span><span style="font-size:12px;color:var(--muted);font-weight:600">${medDone}/${medItems.length} done</span></div>
+      ${medItems.length? medItems.map(it=>`
+        <div class="card medrow ${it.given?'done':''}" style="padding:10px 11px;margin-bottom:8px;display:flex;align-items:center;gap:9px">
+          <input class="todTime" type="time" data-hi="${it.hi}" data-mi="${it.mi}" value="${it.time}">
+          ${horse3D(it.color,30)}
+          <div style="flex:1;min-width:0"><div class="mn2" style="font-weight:600;font-size:13.5px">${escapeHtml(it.n)} <span style="color:var(--muted);font-weight:400">· ${escapeHtml(it.horse)}</span></div>
+          <div style="font-size:11.5px;color:var(--muted)">${escapeHtml(it.dose)}</div></div>
+          <button class="todCheck ${it.given?'on':''}" data-hi="${it.hi}" data-mi="${it.mi}" aria-label="mark done">${it.given?'✓':''}</button>
+        </div>`).join("") : `<div class="empty">No medications scheduled. Add them on a horse's page.</div>`}
+
+      <div class="section-label"><h2>On the property now</h2><span class="ln"></span><span style="font-size:12px;color:var(--muted);font-weight:600">${onProp.length}</span></div>
+      ${onProp.length? onProp.map(m=>`
+        <div class="card" style="padding:11px;margin-bottom:9px;display:flex;align-items:center;gap:11px">
+          ${horse3D(m.color,34)}
+          <div style="flex:1"><div style="font-weight:600;font-size:14px">${escapeHtml(m.full)}${m.me?' · you':''}</div>
+          <div style="font-size:12px;color:var(--muted)">${escapeHtml(m.horse)} · ${escapeHtml(m.contact)}</div></div>
+        </div>`).join("") : `<div class="empty">Nobody's checked in right now.</div>`}`;
+
+  const horses = (()=>{
+    let rows=S.horses.map((h,hi)=>({h,hi}));
+    if(S.rosterSort){ rows=rows.slice().sort((a,b)=>{
+      const ag=a.h.location===S.rosterSort?0:1, bg=b.h.location===S.rosterSort?0:1;
+      if(ag!==bg) return ag-bg;
+      return a.h.name.localeCompare(b.h.name);
+    }); }
+    return `
+      <div class="section-label"><h2>Horse roster</h2><span class="ln"></span><span style="font-size:12px;color:var(--muted);font-weight:600">${S.horses.length}</span></div>
+      <div class="rsort">
+        <button class="${!S.rosterSort?'on':''}" data-sort="">Default</button>
+        <button class="${S.rosterSort==='pasture'?'on':''}" data-sort="pasture">🌿 Pasture first</button>
+        <button class="${S.rosterSort==='stall'?'on':''}" data-sort="stall">🏠 Stall first</button>
+      </div>
+      ${rows.map(({h,hi})=>`
+        <button class="card horseRow" data-h="${hi}" style="width:100%;text-align:left;padding:11px;margin-bottom:9px;display:flex;align-items:center;gap:11px">
+          ${horse3D(h.color,38)}
+          <div style="flex:1"><div style="font-weight:600;font-size:14.5px">${h.name}</div>
+          <div style="font-size:12px;color:var(--muted)">${h.location==='pasture'?h.pasture:h.stall} · ${escapeHtml(h.owner)}</div></div>
+          <span class="chip ${h.location==='pasture'?'easy':''}">${h.location==='pasture'?'🌿 Pasture':'🏠 Stall'}</span>
+          <span style="color:var(--muted);font-size:18px;font-weight:700">›</span>
+        </button>`).join("")}
+      <p style="font-size:11px;color:var(--muted);text-align:center;margin:6px 0 0">Tap a horse for owner info, meds, and to set its stall or pasture.</p>`;
+  })();
+
+  const announce = `
+      <div class="section-label"><h2>Post an announcement</h2><span class="ln"></span></div>
+      <div class="card" style="padding:13px;margin-bottom:11px">
+        <textarea id="annBox" placeholder="Share a new update with everyone at the ranch…" style="width:100%;border:1px solid var(--line);border-radius:11px;padding:10px;resize:none;min-height:60px;background:var(--surface-2);font-size:16px;color:var(--ink)"></textarea>
+        <button class="btn leather sm" id="annPost" style="margin-top:8px;width:100%">Post announcement</button>
+      </div>
+      <div class="section-label"><h2>Posted</h2><span class="ln"></span><span style="font-size:12px;color:var(--muted);font-weight:600">${S.announcements.length}</span></div>
+      ${S.announcements.length? S.announcements.map(a=> S.editAnn===a.id ? `
+        <div class="card" style="padding:12px;margin-bottom:9px">
+          <textarea class="annEdit" data-id="${a.id}" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:9px;resize:vertical;min-height:62px;background:var(--surface-2);font-size:16px;color:var(--ink)">${escapeHtml(a.txt)}</textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn ghost sm annCancel" style="flex:1">Cancel</button>
+            <button class="btn leather sm annSave" data-id="${a.id}" style="flex:1">Save changes</button>
+          </div>
+        </div>` : `
+        <div class="card" style="padding:12px;margin-bottom:9px;border-left:3px solid var(--brass)">
+          <div style="font-size:13.5px;color:#352f27">${escapeHtml(a.txt)}</div>
+          <div style="display:flex;align-items:center;margin-top:9px;gap:9px">
+            <span style="font-size:11px;color:var(--muted)">📣 ${a.by} · ${a.when}</span>
+            <button class="btn ghost sm annEditBtn" data-id="${a.id}" style="margin-left:auto;padding:5px 12px">Edit</button>
+            <button class="btn sm annDel" data-id="${a.id}" style="background:var(--bad);padding:5px 12px">Delete</button>
+          </div>
+        </div>`).join("") : `<div class="empty">No announcements up right now.</div>`}`;
+
+  const security = `
+      <div class="section-label"><h2>Ranch summary</h2><span class="ln"></span></div>
+      <div class="stat-row" style="margin-bottom:12px">
+        <div class="card stat"><div class="n">${S.horses.length-inPasture}</div><div class="l">In stalls</div></div>
+        <div class="card stat"><div class="n">${inPasture}</div><div class="l">In pasture</div></div>
+        <div class="card stat"><div class="n">$${due}</div><div class="l">Balance due</div></div>
+      </div>
+      <div class="section-label"><h2>Change PIN</h2><span class="ln"></span></div>
+      <div class="card" style="padding:13px;margin-bottom:6px">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:9px">Change the operator PIN used to open this office.</div>
+        <input id="pinNew" type="password" inputmode="numeric" maxlength="4" placeholder="New 4-digit PIN" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);margin-bottom:8px;letter-spacing:.5em;text-align:center;font-size:18px;color:var(--ink)">
+        <input id="pinNew2" type="password" inputmode="numeric" maxlength="4" placeholder="Confirm new PIN" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);margin-bottom:10px;letter-spacing:.5em;text-align:center;font-size:18px;color:var(--ink)">
+        <button class="btn leather sm" id="pinSave" style="width:100%">Update PIN</button>
+      </div>`;
+
+  const content = tab==="horses"?horses : tab==="announce"?announce : tab==="security"?security : today;
+
+  shell.innerHTML=`
+  ${opTop()}
+  <div class="body leopard">
+   <div class="op-sheet">
+    <div class="view">
+      <div class="optabs">
+        <button class="optab ${tab==='today'?'on':''}" data-ot="today">Today</button>
+        <button class="optab ${tab==='horses'?'on':''}" data-ot="horses">Horses</button>
+        <button class="optab ${tab==='announce'?'on':''}" data-ot="announce">Posts</button>
+        <button class="optab ${tab==='security'?'on':''}" data-ot="security">Settings</button>
+      </div>
+      ${content}
+      <div class="foot"><b>ForEver After All Ranch · Office build v0.1</b></div>
+    </div>
+   </div>
+  </div>`;
+  $("#exitOwner").onclick=()=>{S.owner=false;S.ownerHorse=null;render();};
+  shell.querySelectorAll(".optab").forEach(b=>b.onclick=()=>{ S.opTab=b.dataset.ot; S.editAnn=null; renderOwner(); });
+  const ap=$("#annPost"); if(ap)ap.onclick=()=>{
+    const v=$("#annBox").value.trim(); if(!v){toast("Write something first");return;}
+    S.announcements.unshift({id:Date.now(),txt:v,when:"Just now",by:"Bryanna"});
+    save(); renderOwner(); toast("Announcement posted 📣");
+  };
+  shell.querySelectorAll(".annEditBtn").forEach(b=>b.onclick=()=>{ S.editAnn=Number(b.dataset.id); renderOwner(); });
+  shell.querySelectorAll(".annCancel").forEach(b=>b.onclick=()=>{ S.editAnn=null; renderOwner(); });
+  shell.querySelectorAll(".annSave").forEach(b=>b.onclick=()=>{
+    const id=Number(b.dataset.id), ta=shell.querySelector('.annEdit[data-id="'+id+'"]'), v=ta.value.trim();
+    if(!v){ toast("Announcement can't be empty"); return; }
+    const a=S.announcements.find(x=>x.id===id); a.txt=v; a.when="Edited just now"; S.editAnn=null; save(); renderOwner(); toast("Announcement updated");
+  });
+  shell.querySelectorAll(".annDel").forEach(b=>b.onclick=()=>{
+    const id=Number(b.dataset.id);
+    confirmModal("Delete this announcement?","It will be removed for everyone at the ranch.","Delete",()=>{
+      S.announcements=S.announcements.filter(x=>x.id!==id); save(); renderOwner(); toast("Announcement deleted");
+    });
+  });
+  shell.querySelectorAll(".horseRow").forEach(b=>b.onclick=()=>{ S.ownerHorse=Number(b.dataset.h); renderOwner(); });
+  shell.querySelectorAll(".rsort button").forEach(b=>b.onclick=()=>{ S.rosterSort=b.dataset.sort||null; renderOwner(); });
+  shell.querySelectorAll(".todCheck").forEach(b=>b.onclick=()=>{
+    const h=S.horses[+b.dataset.hi], m=h.meds[+b.dataset.mi];
+    m.given=!m.given; save(); renderOwner();
+    toast(m.given?`${m.n} done ✓`:`${m.n} un-checked`);
+  });
+  shell.querySelectorAll(".todTime").forEach(inp=>inp.onchange=()=>{
+    const h=S.horses[+inp.dataset.hi], m=h.meds[+inp.dataset.mi];
+    m.time=inp.value||"07:00"; save(); renderOwner();
+  });
+  const psv=$("#pinSave"); if(psv)psv.onclick=()=>{
+    const a=$("#pinNew").value, b=$("#pinNew2").value;
+    if(!/^\d{4}$/.test(a)){ toast("PIN must be 4 digits"); return; }
+    if(a!==b){ toast("PINs don't match"); return; }
+    S.pin=a; store.set("ch_pin",a); $("#pinNew").value=""; $("#pinNew2").value=""; toast("Operator PIN updated 🔑");
+  };
+}
+function renderHorseDetail(hi){
+  const h=S.horses[hi];
+  const spot = h.location==='pasture' ? h.pasture : h.stall;
+  const stallGrid = `<div class="stallgrid">${STALLS.map(s=>{
+      const occ=S.horses.findIndex(x=>x.location==='stall' && x.stall===s);
+      const mine=(occ===hi), taken=(occ>=0 && occ!==hi);
+      return `<button class="stallcell ${mine?'mine':''} ${taken?'taken':''}" data-stall="${s}" ${taken?'disabled':''}>
+        <div class="sn">${s.replace('Stall ','#')}</div>
+        <div class="so">${mine?'this horse':taken?S.horses[occ].name:'open'}</div>
+      </button>`;
+    }).join("")}</div>`;
+  const pastureList = PASTURES.map(p=>{
+      const count=S.horses.filter(x=>x.location==='pasture' && x.pasture===p).length;
+      const mine=(h.location==='pasture' && h.pasture===p);
+      const full=(count>=PASTURE_CAP && !mine);
+      return `<button class="pastrow ${mine?'mine':''}" data-pasture="${p}" ${full?'disabled':''}>
+        <span>🌿 ${p}</span><span class="cnt">${count}/${PASTURE_CAP}${mine?' · here':full?' · full':''}</span>
+      </button>`;
+    }).join("");
+  shell.innerHTML=`
+  ${opTop()}
+  <div class="body leopard">
+   <div class="op-sheet">
+    <div class="view">
+      <button class="back-btn" id="hdBack">‹ Back to roster</button>
+      <div class="card" style="padding:15px;margin-bottom:14px;display:flex;gap:13px;align-items:center">
+        ${horse3D(h.color,58)}
+        <div><div style="font-family:'Bricolage Grotesque';font-weight:700;font-size:22px">${h.name}</div>
+        <div style="font-size:12px;color:var(--muted)">${spot} · ${h.plan}</div></div>
+      </div>
+
+      <div class="mini-label">Owner</div>
+      <div class="card" style="padding:13px;margin-bottom:14px">
+        <div style="font-weight:600;font-size:14px">${escapeHtml(h.owner)}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:2px">${escapeHtml(h.contact)}</div>
+        <div style="display:flex;align-items:center;margin-top:10px"><span class="chip">${h.plan}</span>
+        <div class="bal ${h.balance>0?'due':'paid'}" style="margin-left:auto"><div class="amt">${h.balance>0?'$'+h.balance+' due':'Paid up'}</div></div></div>
+      </div>
+
+      <div class="mini-label">Location</div>
+      <div class="card" style="padding:13px;margin-bottom:14px">
+        <div class="seg">
+          <button class="segbtn ${h.location==='stall'?'on':''}" id="catStall">🏠 Stall</button>
+          <button class="segbtn ${h.location==='pasture'?'on':''}" id="catPasture">🌿 Pasture</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin:2px 0 9px">Currently in <b style="color:var(--ink)">${spot}</b>. ${h.location==='stall'?'Pick a stall:':'Pick a pasture:'}</div>
+        ${h.location==='stall' ? stallGrid : pastureList}
+      </div>
+
+      <div class="mini-label">Medications</div>
+      ${h.meds.map((m,mi)=> (S.medEdit&&S.medEdit.hi===hi&&S.medEdit.mi===mi)
+        ? `<div class="card" style="padding:12px;margin-bottom:8px">
+             <input class="medfield medN" value="${escapeAttr(m.n)}" placeholder="Medication name" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="next">
+             <input class="medfield medD" value="${escapeAttr(m.dose)}" placeholder="Dose (e.g. 1 tab)" autocapitalize="sentences" enterkeyhint="done">
+             <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px"><span style="font-size:12px;color:var(--muted);font-weight:600">Time</span>
+               <input class="medfield medT" type="time" value="${m.time||'07:00'}" style="margin:0;flex:1"></div>
+             <div style="display:flex;gap:8px">
+               <button class="btn ghost sm medCancel" style="flex:1">Cancel</button>
+               <button class="btn sm medDel" data-mi="${mi}" style="background:var(--bad)">Delete</button>
+               <button class="btn leather sm medSave" data-mi="${mi}" style="flex:1">Save</button>
+             </div>
+           </div>`
+        : `<div class="med"><div style="flex:1"><div class="mn">${escapeHtml(m.n)}</div><div class="md">${escapeHtml(m.dose)} · ${fmtTime(m.time)}</div></div>
+             <button class="btn ghost sm medEditBtn" data-mi="${mi}" style="padding:5px 11px;margin-right:8px">Edit</button>
+             <button class="toggle switch ${m.given?'on':''}" data-m="${mi}" aria-label="mark given"></button></div>`).join("")}
+      ${(S.medEdit&&S.medEdit.hi===hi&&S.medEdit.mi===-1)
+        ? `<div class="card" style="padding:12px;margin-bottom:8px">
+             <input class="medfield medN" value="" placeholder="Medication name" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="next">
+             <input class="medfield medD" value="" placeholder="Dose (e.g. 1 tab)" autocapitalize="sentences" enterkeyhint="done">
+             <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px"><span style="font-size:12px;color:var(--muted);font-weight:600">Time</span>
+               <input class="medfield medT" type="time" value="07:00" style="margin:0;flex:1"></div>
+             <div style="display:flex;gap:8px">
+               <button class="btn ghost sm medCancel" style="flex:1">Cancel</button>
+               <button class="btn leather sm medSave" data-mi="-1" style="flex:1">Add</button>
+             </div>
+           </div>`
+        : `<button class="btn ghost sm" id="medAdd" style="width:100%;margin-top:4px">+ Add medication</button>`}
+      ${h.meds.length?'':`<div style="font-size:12px;color:var(--muted);padding:6px 2px 0">No medications yet.</div>`}
+      <div class="note" style="margin-top:9px">🥣 ${escapeHtml(h.feed)}</div>
+      <div class="foot"><b>ForEver After All Ranch · Office build v0.1</b></div>
+    </div>
+   </div>
+  </div>`;
+  $("#exitOwner").onclick=()=>{S.owner=false;S.ownerHorse=null;render();};
+  $("#hdBack").onclick=()=>{S.ownerHorse=null;S.opTab="horses";renderOwner();};
+
+  const firstOpenStall=()=>STALLS.find(s=>S.horses.findIndex(x=>x.location==='stall'&&x.stall===s)<0);
+  const firstOpenPasture=()=>PASTURES.find(p=>S.horses.filter(x=>x.location==='pasture'&&x.pasture===p).length<PASTURE_CAP);
+
+  const cs=$("#catStall"); if(cs)cs.onclick=()=>{
+    if(h.location==='stall')return;
+    const open=firstOpenStall();
+    if(!open){ toast("All 9 stalls are full"); return; }
+    confirmModal(`Bring ${h.name} into a stall?`,`This moves ${h.name} from ${h.pasture} into ${open}. You can pick a different stall after.`,"Move to stall",
+      ()=>{ h.location="stall"; h.stall=open; save(); renderHorseDetail(hi); toast(`${h.name} is now in ${open} 🏠`); });
+  };
+  const cp=$("#catPasture"); if(cp)cp.onclick=()=>{
+    if(h.location==='pasture')return;
+    const open=firstOpenPasture();
+    if(!open){ toast("All pastures are full"); return; }
+    confirmModal(`Turn ${h.name} out to pasture?`,`This moves ${h.name} from ${h.stall} out to ${open}. You can pick a different pasture after.`,"Move to pasture",
+      ()=>{ h.location="pasture"; h.pasture=open; save(); renderHorseDetail(hi); toast(`${h.name} is now in ${open} 🌿`); });
+  };
+  shell.querySelectorAll(".stallcell").forEach(c=>c.onclick=()=>{
+    const s=c.dataset.stall; if(s===h.stall)return;
+    h.stall=s; save(); renderHorseDetail(hi); toast(`${h.name} moved to ${s}`);
+  });
+  shell.querySelectorAll(".pastrow").forEach(c=>c.onclick=()=>{
+    const p=c.dataset.pasture; if(p===h.pasture)return;
+    h.pasture=p; save(); renderHorseDetail(hi); toast(`${h.name} moved to ${p}`);
+  });
+  const ma=$("#medAdd"); if(ma)ma.onclick=()=>{ S.medEdit={hi,mi:-1}; renderHorseDetail(hi); };
+  shell.querySelectorAll(".medEditBtn").forEach(b=>b.onclick=()=>{ S.medEdit={hi,mi:+b.dataset.mi}; renderHorseDetail(hi); });
+  shell.querySelectorAll(".medCancel").forEach(b=>b.onclick=()=>{ S.medEdit=null; renderHorseDetail(hi); });
+  shell.querySelectorAll(".medSave").forEach(b=>b.onclick=()=>{
+    const card=b.closest(".card");
+    const n=card.querySelector(".medN").value.trim();
+    const dose=card.querySelector(".medD").value.trim();
+    const time=card.querySelector(".medT").value||"07:00";
+    if(!n){ toast("Give the medication a name"); return; }
+    const mi=+b.dataset.mi;
+    if(mi===-1) h.meds.push({n,dose,time,given:false});
+    else { h.meds[mi].n=n; h.meds[mi].dose=dose; h.meds[mi].time=time; }
+    S.medEdit=null; save(); renderHorseDetail(hi); toast(mi===-1?`${n} added`:`${n} updated`);
+  });
+  shell.querySelectorAll(".medDel").forEach(b=>b.onclick=()=>{
+    const mi=+b.dataset.mi, nm=h.meds[mi].n;
+    confirmModal(`Delete ${nm}?`,`This removes ${nm} from ${h.name}'s medications.`,"Delete",
+      ()=>{ h.meds.splice(mi,1); S.medEdit=null; save(); renderHorseDetail(hi); toast(`${nm} deleted`); });
+  });
+  shell.querySelectorAll(".med .toggle").forEach(sw=>sw.onclick=()=>{
+    const m=h.meds[sw.dataset.m]; m.given=!m.given; save(); renderHorseDetail(hi);
+    toast(m.given?`${m.n} marked given`:`${m.n} un-marked`);
+  });
+}
+
+function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* boot */
+render();
+</script>
+</body>
+</html>
