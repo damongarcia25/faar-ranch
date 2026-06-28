@@ -27,11 +27,11 @@
     --radius:16px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;height:100%}
+  html,body{margin:0;padding:0;height:100%;overscroll-behavior:none}
   body{
     font-family:Inter,system-ui,sans-serif;
     color:var(--ink);
-    overflow:hidden;
+    position:fixed;inset:0;overflow:hidden;
     background:
       radial-gradient(120% 90% at 50% -10%, #f6e7df 0%, var(--bg) 55%) fixed,
       repeating-linear-gradient(90deg, rgba(120,84,64,.035) 0 2px, transparent 2px 46px) fixed;
@@ -56,35 +56,38 @@
 
   /* ---- top bar ---- */
   .topbar{
-    background:var(--bark);color:#EDE6D6;padding:14px 18px;
-    display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30;
+    background:var(--bark);color:#EDE6D6;padding:12px 14px;
+    display:flex;align-items:center;gap:10px;position:relative;z-index:30;flex:none;
     border-bottom:1px solid rgba(182,138,62,.35);
   }
-  .brand{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+  .brand{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none;flex:1;min-width:0}
   .brand .mark{
-    width:30px;height:30px;border-radius:8px;flex:none;
-    background:linear-gradient(160deg,var(--brass-lt),var(--brass));
+    width:36px;height:36px;border-radius:10px;flex:none;overflow:hidden;
+    background:#FBF6EE;
     display:grid;place-items:center;color:var(--bark);
     box-shadow:inset 0 1px 1px rgba(255,255,255,.5), 0 1px 3px rgba(0,0,0,.3);
   }
-  .brand b{font-family:"Bricolage Grotesque";font-weight:700;font-size:16px;letter-spacing:.01em;line-height:1}
-  .brand small{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-lt);margin-top:2px}
-  .topbar .spacer{flex:1}
+  .brand .mark img{width:100%;height:100%;object-fit:cover}
+  .brand-txt{min-width:0}
+  .brand b{font-family:"Bricolage Grotesque";font-weight:700;font-size:15px;letter-spacing:.01em;line-height:1.08;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .brand small{display:block;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--brass-lt);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .topbar-right{display:flex;align-items:center;gap:8px;flex:none}
   .status-pill{
-    display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+    display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;
     padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.07);
     border:1px solid rgba(255,255,255,.12);white-space:nowrap;
   }
-  .dot{width:7px;height:7px;border-radius:50%;background:#7e8c80}
+  .dot{width:7px;height:7px;border-radius:50%;background:#7e8c80;flex:none}
   .dot.on{background:#7BD389;box-shadow:0 0 0 3px rgba(123,211,137,.25);animation:pulse 2s infinite}
   @keyframes pulse{50%{box-shadow:0 0 0 6px rgba(123,211,137,0)}}
-  .ava{width:30px;height:30px;border-radius:9px;object-fit:cover;border:1.5px solid var(--brass);background:var(--pine)}
-  .icon-btn{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#EDE6D6;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);position:relative;flex:none}
+  .ava{width:32px;height:32px;border-radius:9px;object-fit:cover;border:1.5px solid var(--brass);background:var(--pine)}
+  .icon-btn{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#EDE6D6;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);position:relative;flex:none}
   .icon-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
-  .nbadge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 3px;border-radius:9px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid var(--bark)}
+  .nbadge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid var(--bark);box-sizing:border-box}
+  .prof-btn{padding:0;border-radius:9px;flex:none;line-height:0}
 
   /* ---- scroll body ---- */
-  .body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}
+  .body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;overscroll-behavior:contain;touch-action:pan-y}
   .view{padding:18px 16px 8px;animation:rise .35s ease}
   @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--leather);font-weight:600;margin:0 0 4px}
@@ -531,6 +534,11 @@ function horse3D(coat,size=28){
 function horseBox(color,size=22){ return horse3D(color,size); }
 function pHorse(){ const h=S.user&&S.user.horses&&S.user.horses[0]; return h||{name:(S.user&&S.user.horse)||"Horse",color:(S.user&&S.user.color)||"buckskin"}; }
 function dispName(){ return (S.user&&(S.user.nick||S.user.name))||"You"; }
+function isMe(who){
+  if(!who) return false;
+  const me=[dispName(), firstName(dispName()), S.user&&S.user.name, firstName((S.user&&S.user.name)||""), pHorse().name].filter(Boolean);
+  return me.indexOf(who)>=0;
+}
 function firstName(s){ return (s||"").trim().split(" ")[0]; }
 function boardLabel(p){ return p.showHorse ? p.horse : (p.first || firstName(p.name||p.full)); }
 function userLabel(){ return S.user.showHorse ? pHorse().name : firstName(dispName()); }
@@ -673,18 +681,20 @@ function renderApp(){
   renderView();
 }
 function topbar(){
+  const unread=S.notifs.filter(n=>!n.read).length;
   return `<div class="topbar">
     <div class="brand" id="brand">
       <div class="mark logo"><img src="${LOGO}" alt="ForEver After All Ranch logo" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="fallback" style="display:none">${horseGlyph(18)}</span></div>
-      <div><b>ForEver After All</b><small>Ranch · Tucson, AZ</small></div>
+      <div class="brand-txt"><b>ForEver After All</b><small>Ranch · Tucson, AZ</small></div>
     </div>
-    <div class="spacer"></div>
-    <div class="status-pill"><span class="dot ${S.checkedIn?'on':''}"></span>${S.checkedIn?'At the ranch':'Away'}</div>
-    <button id="bellBtn" class="icon-btn" aria-label="Notifications">
-      <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-      <span id="bellBadge" class="nbadge" style="${S.notifs.filter(n=>!n.read).length?'':'display:none'}">${S.notifs.filter(n=>!n.read).length}</span>
-    </button>
-    <button id="profBtn" style="padding:0;border-radius:9px" aria-label="Your profile">${avatar(S.user.photo,pHorse().color,S.user.name,30)}</button>
+    <div class="topbar-right">
+      <div class="status-pill"><span class="dot ${S.checkedIn?'on':''}"></span>${S.checkedIn?'Here':'Away'}</div>
+      <button id="bellBtn" class="icon-btn" aria-label="Notifications">
+        <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span id="bellBadge" class="nbadge" style="${unread?'':'display:none'}">${unread}</span>
+      </button>
+      <button id="profBtn" class="prof-btn" aria-label="Your profile">${avatar(S.user.photo,pHorse().color,S.user.name,32)}</button>
+    </div>
   </div>`;
 }
 function tabs(){
@@ -780,7 +790,7 @@ function viewFeed(){
     ${S.feed.map(p=>`
       <div class="card post" data-pid="${p.id}">
         <div class="head">
-          ${avatar(null,p.color,p.who,32)}
+          ${avatar(isMe(p.who)?S.user.photo:null,p.color,p.who,32)}
           <div style="flex:1"><div class="who">${p.who} ${horseBox(p.color,18)} <span style="color:var(--muted);font-weight:400">· ${p.horse}</span></div><div class="when">${p.when}</div></div>
           <span class="tag">${p.tag}</span>
         </div>
@@ -790,7 +800,7 @@ function viewFeed(){
           <button class="replyBtn" data-pid="${p.id}">💬 Reply${(p.replies&&p.replies.length)?' · '+p.replies.length:''}</button>
         </div>
         ${(p.replies&&p.replies.length)?`<div class="reply-list">${p.replies.map(r=>`
-          <div class="reply">${avatar(null,r.color,r.who,26)}
+          <div class="reply">${avatar(isMe(r.who)?S.user.photo:null,r.color,r.who,26)}
             <div><span class="rwho">${r.who}</span> ${horseBox(r.color,15)} <span class="rwhen">· ${r.when}</span><div class="rtxt">${escapeHtml(r.txt)}</div></div>
           </div>`).join("")}</div>`:""}
         ${S.replyOpen===p.id?`<div class="reply-box"><input id="replyInput" placeholder="Write a reply…" autocomplete="off" autocapitalize="sentences" enterkeyhint="send"><button class="btn brass sm replySend" data-pid="${p.id}" style="padding:9px 13px">Send</button></div>`:""}
@@ -903,7 +913,7 @@ function bindRides(){
 }
 function chatBubble(m){
   return `<div class="card" style="padding:10px 12px;margin-bottom:8px;display:flex;gap:9px;align-items:flex-start">
-    ${avatar(null,m.color,m.who,30)}
+    ${avatar(isMe(m.who)?S.user.photo:null,m.color,m.who,30)}
     <div style="flex:1"><div style="font-size:12.5px"><b>${m.who}</b> <span style="color:var(--muted);font-size:11px">· ${m.when}</span></div>
     <div style="font-size:13.5px;color:#352f27;margin-top:1px">${escapeHtml(m.txt)}</div></div>
   </div>`;
